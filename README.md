@@ -44,6 +44,6 @@ No backend, API key, or external image/font service is required. Anton and DM Sa
 
 ## GitHub Pages deployment
 
-The Vite build uses relative asset URLs, so the site works under `/t002/` and on a custom domain. The `Publish portfolio` workflow rebuilds and updates `gh-pages` after changes to `main`.
+The Vite build uses relative asset URLs, so the site works under `/t002/` and on a custom domain. The `Publish portfolio` workflow rebuilds the site, uploads a Pages artifact, and deploys it with GitHub’s official Pages actions after changes to `main`.
 
-In the repository's **Settings → Pages**, select **Deploy from a branch**, then **gh-pages** and **/ (root)**. Save. The expected URL is `https://ejaubashi.github.io/t002/`; it becomes live after GitHub finishes the Pages deployment.
+In the repository's **Settings → Pages**, select **GitHub Actions** as the source. The expected URL is `https://ejaubashi.github.io/t002/`; it becomes live after GitHub finishes the Pages deployment.

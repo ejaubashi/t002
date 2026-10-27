@@ -6,14 +6,16 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: github-pages
   cancel-in-progress: true
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,15 +25,18 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm run build
-      - name: Update the GitHub Pages branch
-        shell: bash
-        run: |
-          set -euo pipefail
-          touch dist/.nojekyll
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f dist
-          build_tree=$(git write-tree)
-          build_commit=$(git commit-tree "$build_tree" -p HEAD -m 'Prepare Pages output')
-          artifact_commit=$(git subtree split --prefix=dist "$build_commit")
-          git push origin "$artifact_commit:refs/heads/gh-pages" --force
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy portfolio
+        id: deployment
+        uses: actions/deploy-pages@v4
