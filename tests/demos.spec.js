@@ -10,10 +10,11 @@ for (const width of [1440, 390]) {
     const demo = page.locator('#interactive-demo');
     await expect(demo).toBeVisible();
     await expect(page.getByRole('button', { name: 'Play motion' })).toBeVisible();
-    const canvas = demo.locator('canvas');
-    const initial = await canvas.evaluate(el => el.toDataURL());
+    await expect(demo.locator('.demo-3d-ready')).toBeVisible();
+    const canvas = demo.locator('.project-sculpture');
+    const initial = await canvas.screenshot();
     await page.getByRole('button', { name: 'Remix shape' }).click();
-    expect(await canvas.evaluate(el => el.toDataURL())).not.toBe(initial);
+    expect((await canvas.screenshot()).equals(initial)).toBe(false);
     await page.getByRole('slider', { name: 'Orbit tempo' }).focus();
     await page.keyboard.press('End');
     await expect(page.getByRole('slider', { name: 'Orbit tempo' })).toHaveValue('2');
@@ -52,12 +53,13 @@ for (const width of [1440, 390]) {
 test('reduced motion keeps demo frames still until an explicit interaction', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/#project/orbit');
-  const canvas = page.locator('#interactive-demo canvas');
+  await expect(page.locator('.demo-3d-ready')).toBeVisible();
+  const canvas = page.locator('#interactive-demo .project-sculpture');
   await expect(canvas).toBeVisible();
-  const first = await canvas.evaluate(el => el.toDataURL());
+  const first = await canvas.screenshot();
   await page.waitForTimeout(200);
-  expect(await canvas.evaluate(el => el.toDataURL())).toBe(first);
+  expect((await canvas.screenshot()).equals(first)).toBe(true);
   await page.getByRole('button', { name: 'Remix shape' }).click();
-  expect(await canvas.evaluate(el => el.toDataURL())).not.toBe(first);
+  expect((await canvas.screenshot()).equals(first)).toBe(false);
   await page.screenshot({ path: '/tmp/endy-demo-orbit.png' });
 });

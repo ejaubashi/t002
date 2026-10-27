@@ -5,3 +5,13 @@
 .motion-paused .project-preview *{animation-play-state:paused!important}
 
 .dialog-top{position:sticky;top:0;z-index:5;background:var(--paper)}.project-preview .noise-disc:before{content:'';position:absolute;left:48%;top:20%;width:3px;height:20px;background:#e9a6c2;z-index:2}
+
+.project-sculpture{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.demo-3d-ready>canvas:not(.project-sculpture){visibility:hidden}
+.demo-3d-ready .demo-ceramics .vase{visibility:hidden}
+.demo-3d-ready .orbit-demo-title{z-index:2;color:#e3ffd0;font-size:62px;letter-spacing:.1em}
+.demo-3d-ready .demo-ceramics{background:radial-gradient(ellipse at 40% 30%,#f3eddf,#c5baa5)}
+.demo-3d-ready .demo-ceramics .form-logo,.demo-3d-ready .demo-ceramics .form-caption,.demo-3d-ready .ceramic-edition{z-index:2}
+@media(max-width:700px){.demo-3d-ready .orbit-demo-title{font-size:48px}}
+
+.demo-controls .finish-picker [data-color=sand]{background:#ba9670}.demo-controls .finish-picker [data-color=sage]{background:#92a58b}.demo-controls .finish-picker [data-color=clay]{background:#c37151}.demo-controls .finish-picker [data-color=ink]{background:#3b566a}

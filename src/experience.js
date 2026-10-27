@@ -31,25 +31,6 @@ export function projectEntrance(dialog, source, destination) {
 export function cancelEntrance() { portalAnimation?.cancel(); portal?.remove(); portal = null; }
 
 export function initExperience() {
-  const hero = document.querySelector('.hero');
-  const hint = document.createElement('span'); hint.className = 'sculpture-hint';
-  hint.textContent = 'SCULPTURE NO. 01 / DRAG TO DISCOVER'; hero.append(hint);
-  const ticker = document.createElement('div'); ticker.className = 'hero-ticker'; ticker.setAttribute('aria-hidden', 'true');
-  ticker.innerHTML = '<div>'+Array(4).fill('<span>DESIGN WITH INTENT</span><b>✦</b><span>CODE WITH CURIOSITY</span><b>✦</b><span>MADE TO FEEL SOMETHING</span><b>✦</b>').join('')+'</div>';
-  hero.append(ticker);
-  document.body.classList.add('experience-ready');
-  // Load real 3D only after the content is usable; Canvas remains the fallback.
-  let sculptureRequested = false;
-  function loadSculpture() {
-    if (sculptureRequested || document.querySelector('dialog[open]') || navigator.connection?.saveData) return;
-    const box = hero.getBoundingClientRect();
-    if (box.right <= 0 || box.left >= innerWidth || box.bottom <= 0 || box.top >= innerHeight) return;
-    sculptureRequested = true;
-    const load = () => import('./sculpture.js').then(module => module.mountSculpture(hero)).catch(() => {});
-    if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1800 }); else setTimeout(load, 500);
-  }
-  new IntersectionObserver(([entry]) => { if (entry.isIntersecting) loadSculpture(); }).observe(hero);
-  document.querySelector('#project-dialog').addEventListener('close', loadSculpture);
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => entry.target.classList.toggle('is-inview', entry.isIntersecting));
   }, { threshold: .18 });
@@ -65,11 +46,11 @@ export function initExperience() {
   });
   const cursor = document.createElement('div'); cursor.className = 'experience-cursor'; cursor.setAttribute('aria-hidden', 'true'); document.body.append(cursor);
   document.addEventListener('pointermove', event => {
-    const target = event.target.closest('.project-hit,.chrome-canvas');
+    const target = event.target.closest('.project-hit');
     const visible = target && finePointer.matches && !motion.matches && !document.querySelector('dialog[open]');
     cursor.classList.toggle('cursor-visible', !!visible);
     if (!visible) return;
-    cursor.textContent = target.matches('.project-hit') ? 'EXPLORE' : 'DRAG';
+    cursor.textContent = 'EXPLORE';
     cursor.style.transform = `translate(${event.clientX + 18}px,${event.clientY + 18}px)`;
   }, { passive: true });
   document.addEventListener('pointerout', event => { if (!event.relatedTarget) cursor.classList.remove('cursor-visible'); });

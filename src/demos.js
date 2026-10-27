@@ -10,6 +10,7 @@ export function mountDemo(root, index) {
   const listen = (element, event, handler) => element.addEventListener(event, handler, { signal });
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const cleanups = [];
+  let sculpture = null, disposed = false;
   root.className = `demo-shell demo-${index}`;
   root.innerHTML = `<div class="demo-topline"><span><i></i> INTERACTIVE CONCEPT / 0${index + 1}</span><span>PLAY A LITTLE</span></div><div class="demo-stage"></div><div class="demo-controls"></div><p class="demo-instruction">${labels[index]}</p>`;
   const stage = root.querySelector('.demo-stage');
@@ -21,7 +22,7 @@ export function mountDemo(root, index) {
     if (active && inView && !document.hidden && !paused) {
       const delta = Math.min((time - previousTime) / 1000 || 0, .05);
       elapsed += delta;
-      drawFrame(elapsed, delta);
+      if (!sculpture) drawFrame(elapsed, delta);
     }
     previousTime = time;
     animationId = requestAnimationFrame(loop);
@@ -34,6 +35,7 @@ export function mountDemo(root, index) {
       button.textContent = paused ? 'Play motion' : 'Pause motion';
       button.setAttribute('aria-pressed', String(!paused));
       stage.classList.toggle('motion-playing', !paused);
+      sculpture?.setPaused(paused);
     }
     listen(button, 'click', () => { paused = !paused; sync(); });
     const onPreference = () => { paused = reduced.matches; sync(); };
@@ -74,8 +76,8 @@ export function mountDemo(root, index) {
     });
     resize.observe(stage); cleanups.push(() => resize.disconnect());
     listen(stage, 'pointermove', event => { const r = stage.getBoundingClientRect(); x = (event.clientX - r.left) / r.width - .5; y = (event.clientY - r.top) / r.height - .5; if (paused) draw(elapsed); });
-    listen(tempo, 'input', () => draw(elapsed));
-    listen(controls.querySelector('.burst'), 'click', () => { remix += .9; draw(elapsed); });
+    listen(tempo, 'input', () => { draw(elapsed); sculpture?.setTempo(tempo.value); });
+    listen(controls.querySelector('.burst'), 'click', () => { remix += .9; draw(elapsed); sculpture?.remix(); });
     bindPause(controls.querySelector('.motion-toggle')); animate(draw);
   }
 
@@ -84,10 +86,11 @@ export function mountDemo(root, index) {
     controls.innerHTML = '<div class="finish-picker" role="group" aria-label="Ceramic finish"><span>Finish</span><button data-color="sand" aria-label="Sand finish" aria-pressed="true"></button><button data-color="sage" aria-label="Sage finish" aria-pressed="false"></button><button data-color="clay" aria-label="Clay finish" aria-pressed="false"></button><button data-color="ink" aria-label="Ink finish" aria-pressed="false"></button></div><label>Turn <input aria-label="Turn ceramics" type="range" min="-30" max="30" value="0"></label><output aria-live="polite">Sand / 01</output>';
     for (const button of controls.querySelectorAll('[data-color]')) listen(button, 'click', () => {
       stage.dataset.finish = button.dataset.color;
+      sculpture?.setFinish(button.dataset.color);
       controls.querySelectorAll('[data-color]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
       const name = button.dataset.color; controls.querySelector('output').textContent = `${name[0].toUpperCase() + name.slice(1)} / 01`;
     });
-    listen(controls.querySelector('input'), 'input', event => stage.style.setProperty('--turn', `${event.target.value}deg`));
+    listen(controls.querySelector('input'), 'input', event => { stage.style.setProperty('--turn', `${event.target.value}deg`); sculpture?.setTurn(event.target.value); });
     stage.dataset.finish = 'sand';
   }
 
@@ -124,7 +127,16 @@ export function mountDemo(root, index) {
     bindPause(controls.querySelector('.motion-toggle'));
     animate(t => { stage.style.setProperty('--record-angle', `${t * 48}deg`); stage.style.setProperty('--beat', String((Math.sin(t * 5) + 1) / 2)); });
   }
-  return () => { controller.abort(); cancelAnimationFrame(animationId); cleanups.forEach(fn => fn()); };
+  if (index < 2 && !navigator.connection?.saveData) {
+    import('./sculpture.js').then(module => {
+      if (disposed) return;
+      sculpture = module.mountProjectSculpture(stage, index, { onFallback: () => { sculpture = null; } });
+      sculpture?.setPaused(paused);
+      if (index === 0) sculpture?.setTempo(controls.querySelector('input').value);
+      else { sculpture?.setFinish(stage.dataset.finish); sculpture?.setTurn(controls.querySelector('input').value); }
+    }).catch(() => {});
+  }
+  return () => { disposed = true; sculpture?.dispose(); controller.abort(); cancelAnimationFrame(animationId); cleanups.forEach(fn => fn()); };
 }
 
 export function observePreviews() {
