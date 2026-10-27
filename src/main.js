@@ -162,10 +162,12 @@ dialog.addEventListener('click', event => {
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
 });
 dialog.addEventListener('close', () => {
+  // A delayed close event from the previous view must not dispose a reopened demo.
+  if (dialog.open) return;
   cancelEntrance();
   disposeDemo();
   document.body.classList.remove('is-dialog-open'); document.body.style.overflow = '';
-  if (location.hash.startsWith('#project/')) history.replaceState(null, '', projectReturnHash);
+  if (location.hash === `#project/${projects[activeProject].id}`) history.replaceState(null, '', projectReturnHash);
   document.title = isAbout ? `About — ${profile.name}` : `${profile.name} — Creative Development`;
   focusReturn?.focus({ preventScroll: true });
 });

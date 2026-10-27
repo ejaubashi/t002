@@ -21,7 +21,7 @@ npm run build
 npm test
 ```
 
-The thirteen Playwright checks cover horizontal wheel/button/keyboard navigation, every project modal, focus restoration, direct project links and browser Back, about/contact navigation, clipboard copying, reduced motion and animation pause, mobile layout, and the absence of external runtime asset requests or browser errors. Additional demo checks exercise every control at desktop and mobile sizes, and verify reduced-motion behavior.
+The sixteen Playwright checks cover horizontal wheel/button/keyboard navigation, every project modal, focus restoration, direct project links and browser Back, about/contact navigation, clipboard copying, reduced motion and animation pause, mobile layout, and the absence of external runtime asset requests or browser errors. Additional demo checks exercise every control at desktop and mobile sizes, and verify reduced-motion behavior.
 
 Tests use the system Chromium at `/usr/bin/chromium` when available. On another machine, install a Playwright browser using `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to your Chromium executable. The test runner starts the dev server if needed.
 
@@ -55,7 +55,7 @@ Every case study contains an original live demo, implemented in `src/demos.js` a
 - Orbit: pointer-reactive Canvas visualizer, tempo slider, shape remix, and play/pause.
 - Form & Field: four ceramic finishes and keyboard-accessible rotation controls.
 - Offgrid: time-of-day slider, dawn/day/dusk/night presets, and pointer parallax.
-- Good Noise: three visual record designs, spinning vinyl, animated meter, and play/pause. This visual player does not play audio.
+- Good Noise: three visual record designs, spinning vinyl, animated meter, and play/pause. Sound is off by default. An explicit Enable sound action starts quiet, original synthesized chords; muting, backgrounding the tab, or closing the case study silences them.
 
 Gallery previews animate only while visible. Demo animation stops when out of view or when the browser tab is hidden. Closing or replacing a case study removes observers, listeners, and its animation loop. Reduced motion starts demos paused; an explicit play action can enable motion. Projects remain clearly labeled self-initiated concepts.
 
@@ -68,3 +68,13 @@ The Orbit case study has slim, matte lime 3D orbital rings against its blue visu
 The Three.js module loads only when opening a supported project. Lighting is local and procedural; there are no remote models or textures. Rendering is capped and pauses when hidden. Reduced motion starts still. All GPU resources and observers are released when closing or replacing a project; the previous Canvas/CSS illustrations remain usable when WebGL is unavailable.
 
 `src/experience.js` and `src/experience.css` limit preview tilt, cursor hints, and transitions to project content. They do not change the homepage.
+
+## Art direction update
+
+The homepage files and behavior are preserved. Orbit has three shader-backed compositions: Wave, Orbit, and Interference. The 3D rings, particle positions and procedural field share mode controls, with a pointer distortion region. A Canvas fallback supports the same modes. Shader sources live in `src/orbit-shaders.js`.
+
+Form & Field has procedural ceramic bump texture, subtle clearcoat, real contact shadows, finish-dependent roughness, smooth material-color transitions, coordinated background tones and a translucent, blurred control surface. Reduced motion makes finish changes immediate.
+
+Good Noise has three original SVG compositions driven by the selected-record state, including matching typography and layout changes. Motion is controlled by the existing play/pause preference. `src/record-artwork.js` contains the vectors; `src/record-audio.js` contains optional generated audio.
+
+Figma tools and an authored Figma/Make file were unavailable during this implementation. These are native browser implementations of the agreed visual direction, not exported Figma shaders. No Rive asset was supplied; the record artwork uses local SVG and JavaScript state rather than a Rive runtime. No Figma or Rive account is required to view the site.
