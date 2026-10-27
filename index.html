@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ff400a" />
+  <meta name="description" content="bettlemax — independent creative development, digital design, and interactive experiments." />
+  <title>bettlemax — Creative Development</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <a class="skip-link" href="#selected">Skip to selected projects</a>
+  <main id="main">
+    <div class="track" id="work-track" tabindex="0" aria-label="Portfolio. Scroll to explore projects, or use the navigation arrows.">
+      <section class="panel hero" id="home" aria-labelledby="home-title">
+        <canvas id="playground" aria-hidden="true"></canvas>
+        <h1 class="hero-title" id="home-title" aria-label="bettlemax"><span>bettle</span><span>max</span></h1>
+        <p class="hero-description">Independent<br>creative developer<br>& digital designer</p>
+        <span class="hero-note">A little curiosity.<br>A lot of possibility.</span>
+        <a class="explore" href="#selected"><span>Scroll to explore</span><svg viewBox="0 0 44 16" aria-hidden="true"><path d="M0 8h41M34 1l7 7-7 7"/></svg></a>
+        <button class="play-toggle" aria-pressed="false" aria-label="Pause background animation"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg></button>
+      </section>
+      <section class="panel section-divider" tabindex="-1" id="selected" aria-labelledby="selected-title"><h2 id="selected-title">Selected projects<span>2024 — 2026</span></h2><div class="divider-arrow" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="m10 10 78 78M10 88h78V10"/></svg></div><p>Design. Code.<br>And everything<br>in between.</p></section>
+      <div id="project-panels" class="panels-group"></div>
+      <section class="panel archive" id="archive" aria-labelledby="archive-title">
+        <div class="archive-heading"><h2 id="archive-title">A few more<br><span>curiosities.</span></h2><p>Small explorations. Big possibilities.<br>A collection of self-initiated concepts.</p></div>
+        <div class="archive-list" id="archive-list"></div>
+        <a class="archive-contact" href="#about">Have an idea? Let’s talk <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 20 4M4 4h16v16"/></svg></a>
+      </section>
+    </div>
+    <div class="track" id="about-track" tabindex="0" aria-label="About bettlemax. Scroll to read the biography and contact information." hidden>
+      <section class="panel about-hero" aria-labelledby="about-title"><canvas id="about-playground" aria-hidden="true"></canvas><button class="play-toggle" aria-pressed="false" aria-label="Pause background animation"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg></button><h1 class="hero-title" id="about-title"><span>Hello</span><span>there!</span></h1><a class="explore" href="#bio"><span>A little about me</span><svg viewBox="0 0 44 16" aria-hidden="true"><path d="M0 8h41M34 1l7 7-7 7"/></svg></a></section>
+      <section class="panel biography" id="bio" aria-labelledby="bio-title"><h2 id="bio-title" class="eyebrow">The person behind the pixels</h2><div class="bio-copy"><p>I’m bettlemax, a creative developer & digital designer. I turn bold ideas into websites that move, respond, and leave an impression.</p><p>I work where design meets code, exploring expressive typography, playful motion, and unexpected interactions. Every project starts with a simple question: what if?</p><p>Have something in mind?<br><a href="mailto:hello@bettlemax.example">Let’s make it happen.</a><br>Cheers :)</p></div><div class="bio-smile" aria-hidden="true">:)</div></section>
+      <section class="panel contact" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">Good things<br>start with<br><span>a hello.</span></h2><div class="contact-links"><span class="eyebrow">Contact</span><a href="mailto:hello@bettlemax.example" class="email-link">hello@bettlemax.example <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 20 4M4 4h16v16"/></svg></a><button id="copy-email">Copy email to clipboard <span aria-hidden="true">+</span></button><p id="copy-status" role="status" aria-live="polite"></p></div><div class="services"><h3 class="eyebrow">What I do</h3><p>Creative development <span>01</span></p><p>Digital design <span>02</span></p><p>Interaction & motion <span>03</span></p><p>Art direction <span>04</span></p></div><p class="colophon">Independent by nature. Curious by default.<br>© <span id="year"></span> bettlemax</p></section>
+    </div>
+  </main>
+  <nav class="site-nav" aria-label="Main navigation"><a class="nav-brand" href="#home">bettlemax</a><div><a href="#work" aria-current="page">Work</a><span>,</span> <a href="#about">About</a></div></nav>
+  <div class="page-controls"><span id="position-label" aria-live="off">01 / 07</span><button id="previous-panel" aria-label="Previous section" hidden><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14"/><path d="M24 16H8m6-6-6 6 6 6"/></svg></button><button id="next-panel" aria-label="Next section"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14"/><path d="M8 16h16m-6-6 6 6-6 6"/></svg></button></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <dialog id="project-dialog" aria-labelledby="detail-title"><div class="dialog-top"><span>bettlemax / Selected project</span><button class="close-dialog" aria-label="Close project">Close <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 4 12 12M16 4 4 16"/></svg></button></div><div id="project-content"></div></dialog>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
