@@ -5,6 +5,7 @@ import '@fontsource/dm-sans/latin-600.css';
 import './style.css';
 import { artwork } from './artwork.js';
 import { mountDemo, observePreviews } from './demos.js';
+import { initExperience, projectEntrance, cancelEntrance } from './experience.js';
 import { profile, projects } from './data.js';
 import { createPlayground } from './playground.js';
 
@@ -136,6 +137,8 @@ function navigateToProject(index) {
 }
 let disposeDemo = () => {};
 function renderProject(index) {
+  const wasOpen = dialog.open;
+  const preview = document.querySelectorAll('.project-preview')[index];
   disposeDemo();
   activeProject = index;
   const project = projects[index];
@@ -150,6 +153,7 @@ function renderProject(index) {
   }
   dialog.scrollTop = 0;
   document.querySelector('.close-dialog').focus({ preventScroll: true });
+  if (!wasOpen) projectEntrance(dialog, preview, content.querySelector('#interactive-demo'));
 }
 document.querySelector('.close-dialog').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', event => {
@@ -158,6 +162,7 @@ dialog.addEventListener('click', event => {
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
 });
 dialog.addEventListener('close', () => {
+  cancelEntrance();
   disposeDemo();
   document.body.classList.remove('is-dialog-open'); document.body.style.overflow = '';
   if (location.hash.startsWith('#project/')) history.replaceState(null, '', projectReturnHash);
@@ -196,6 +201,7 @@ const pauseButtons = [...document.querySelectorAll('.play-toggle')];
 function updateAnimation() {
   const paused = manuallyPaused || reducedMotion.matches;
   document.body.classList.toggle('motion-paused', paused);
+  document.dispatchEvent(new CustomEvent('portfolio-motion', { detail: { paused } }));
   heroSimulation.setPaused(paused); aboutSimulation.setPaused(paused);
   pauseButtons.forEach(pauseButton => {
   pauseButton.hidden = reducedMotion.matches;
@@ -214,3 +220,5 @@ document.querySelector('#copy-email').addEventListener('click', async () => {
   copyTimer = setTimeout(() => { status.textContent = ''; }, 5000);
 });
 updateControls();
+
+initExperience();

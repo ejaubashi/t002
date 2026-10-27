@@ -4,7 +4,8 @@ import { existsSync } from 'node:fs';
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  workers: 2,
+  // Headless WebGL shares the software GPU; serialize to avoid input starvation.
+  workers: 1,
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:5173',

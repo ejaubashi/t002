@@ -21,7 +21,7 @@ npm run build
 npm test
 ```
 
-The ten Playwright checks cover horizontal wheel/button/keyboard navigation, every project modal, focus restoration, direct project links and browser Back, about/contact navigation, clipboard copying, reduced motion and animation pause, mobile layout, and the absence of external runtime asset requests or browser errors. Additional demo checks exercise every control at desktop and mobile sizes, and verify reduced-motion behavior.
+The twelve Playwright checks cover horizontal wheel/button/keyboard navigation, every project modal, focus restoration, direct project links and browser Back, about/contact navigation, clipboard copying, reduced motion and animation pause, mobile layout, and the absence of external runtime asset requests or browser errors. Additional demo checks exercise every control at desktop and mobile sizes, and verify reduced-motion behavior.
 
 Tests use the system Chromium at `/usr/bin/chromium` when available. On another machine, install a Playwright browser using `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to your Chromium executable. The test runner starts the dev server if needed.
 
@@ -58,3 +58,9 @@ Every case study contains an original live demo, implemented in `src/demos.js` a
 - Good Noise: three visual record designs, spinning vinyl, animated meter, and play/pause. This visual player does not play audio.
 
 Gallery previews animate only while visible. Demo animation stops when out of view or when the browser tab is hidden. Closing or replacing a case study removes observers, listeners, and its animation loop. Reduced motion starts demos paused; an explicit play action can enable motion. Projects remain clearly labeled self-initiated concepts.
+
+## Signature experience
+
+The homepage includes a real, draggable chrome sculpture rendered with Three.js. Its lighting environment is generated locally, so there are no external textures or models. The 3D module loads separately, when the hero is visible and the browser is idle. It stays unloaded for direct project views and data-saver connections. Pixel ratio and frame rate are capped; rendering pauses off-screen, in background tabs, and when motion is paused. Reduced motion renders a static composition. The original Canvas playground remains available if WebGL fails.
+
+`src/experience.js` and `src/experience.css` provide the entrance typography, moving ribbon, pointer-driven project tilt, contextual cursor hint, and preview-to-demo flight. All decorative overlays ignore pointer input; closing a project cancels its transition immediately. Reduced motion skips entrance and flight animations.
