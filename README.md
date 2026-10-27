@@ -21,7 +21,7 @@ npm run build
 npm test
 ```
 
-The seven Playwright checks cover horizontal wheel/button/keyboard navigation, every project modal, focus restoration, direct project links and browser Back, about/contact navigation, clipboard copying, reduced motion and animation pause, mobile layout, and the absence of external runtime asset requests or browser errors.
+The ten Playwright checks cover horizontal wheel/button/keyboard navigation, every project modal, focus restoration, direct project links and browser Back, about/contact navigation, clipboard copying, reduced motion and animation pause, mobile layout, and the absence of external runtime asset requests or browser errors. Additional demo checks exercise every control at desktop and mobile sizes, and verify reduced-motion behavior.
 
 Tests use the system Chromium at `/usr/bin/chromium` when available. On another machine, install a Playwright browser using `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to your Chromium executable. The test runner starts the dev server if needed.
 
@@ -47,3 +47,14 @@ No backend, API key, or external image/font service is required. Anton and DM Sa
 The Vite build uses relative asset URLs, so the site works under `/t002/` and on a custom domain. The `Publish portfolio` workflow rebuilds the site, uploads a Pages artifact, and deploys it with GitHub’s official Pages actions after changes to `main`.
 
 In the repository's **Settings → Pages**, select **GitHub Actions** as the source. The expected URL is `https://ejaubashi.github.io/t002/`; it becomes live after GitHub finishes the Pages deployment.
+
+## Interactive concept demos
+
+Every case study contains an original live demo, implemented in `src/demos.js` and `src/demos.css`:
+
+- Orbit: pointer-reactive Canvas visualizer, tempo slider, shape remix, and play/pause.
+- Form & Field: four ceramic finishes and keyboard-accessible rotation controls.
+- Offgrid: time-of-day slider, dawn/day/dusk/night presets, and pointer parallax.
+- Good Noise: three visual record designs, spinning vinyl, animated meter, and play/pause. This visual player does not play audio.
+
+Gallery previews animate only while visible. Demo animation stops when out of view or when the browser tab is hidden. Closing or replacing a case study removes observers, listeners, and its animation loop. Reduced motion starts demos paused; an explicit play action can enable motion. Projects remain clearly labeled self-initiated concepts.

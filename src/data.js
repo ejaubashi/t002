@@ -12,7 +12,7 @@ export const projects = [
     caption: 'An expressive digital identity for a new generation of sound.',
     description: 'A concept digital experience for a new generation of sound. Bold typography, electric color, and orbital forms come together in a visual identity built around movement.',
     approach: 'The visual system pairs a striking landing page with an adaptable layout for releases, artists, and stories. Circular motifs and a high-contrast palette bring a sense of rhythm to the experience.',
-    outcome: 'A self-initiated exploration of music, motion, and expressive interfaces. The artwork is generated with CSS, keeping the experience lightweight and independent of third-party assets.',
+    outcome: 'A self-initiated exploration of music, motion, and expressive interfaces. The live Canvas visualizer responds to your pointer, with tempo and shape-remix controls. It stays lightweight and independent of third-party assets.',
   },
   {
     id: 'form-and-field', name: 'Form & Field', lines: ['Form & Field', 'Objects with soul'], year: '2025',

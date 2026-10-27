@@ -4,6 +4,7 @@ import '@fontsource/dm-sans/latin-500.css';
 import '@fontsource/dm-sans/latin-600.css';
 import './style.css';
 import { artwork } from './artwork.js';
+import { mountDemo, observePreviews } from './demos.js';
 import { profile, projects } from './data.js';
 import { createPlayground } from './playground.js';
 
@@ -18,7 +19,7 @@ projects.forEach((project, index) => {
   panel.style.setProperty('--secondary', project.secondary);
   panel.style.setProperty('--mobile-title', `${Math.min(12.4, 180 / Math.max(...project.lines.map(line => line.length)))}vw`);
   panel.setAttribute('aria-labelledby', `${project.id}-title`);
-  panel.innerHTML = `<div class="shape shape-circle"></div><div class="shape shape-triangle"></div><div class="shape shape-dot"></div><div class="shape shape-ring"></div><span class="project-index">0${index + 1} / ${project.year} — CONCEPT PROJECT</span><div class="project-preview" aria-hidden="true"><div class="project-art ${artwork[index][0]}">${artwork[index][1]}</div></div><h2 class="project-heading" id="${project.id}-title"><span>${project.lines[0]}</span><span>${project.lines[1]}</span></h2><p class="project-caption">${project.caption}</p><button class="project-hit" aria-label="View ${project.name} project"><span>Explore project ${arrow}</span></button>`;
+  panel.innerHTML = `<div class="shape shape-circle"></div><div class="shape shape-triangle"></div><div class="shape shape-dot"></div><div class="shape shape-ring"></div><span class="project-index">0${index + 1} / ${project.year} — CONCEPT PROJECT</span><div class="project-preview" aria-hidden="true"><div class="project-art ${artwork[index][0]}">${artwork[index][1]}</div></div><h2 class="project-heading" id="${project.id}-title"><span>${project.lines[0]}</span><span>${project.lines[1]}</span></h2><p class="project-caption">${project.caption}</p><button class="project-hit" aria-label="View ${project.name} project"><span>Try the live concept ${arrow}</span></button>`;
   panel.querySelector('button').addEventListener('click', () => navigateToProject(index));
   projectPanels.append(panel);
   const button = document.createElement('button');
@@ -26,6 +27,8 @@ projects.forEach((project, index) => {
   button.setAttribute('aria-label', `View ${project.name} project`);
   button.addEventListener('click', () => navigateToProject(index)); archive.append(button);
 });
+
+observePreviews();
 
 document.querySelectorAll('a[href="mailto:endyj@dev.com"]').forEach(link => {
   link.href = `mailto:${profile.email}`;
@@ -131,11 +134,14 @@ function navigateToProject(index) {
   if (!dialog.open) { projectReturnHash = location.hash || '#work'; focusReturn = document.activeElement; }
   location.hash = `project/${projects[index].id}`;
 }
+let disposeDemo = () => {};
 function renderProject(index) {
+  disposeDemo();
   activeProject = index;
   const project = projects[index];
   const next = projects[(index + 1) % projects.length];
-  content.innerHTML = `<div class="detail-header"><p class="detail-label">0${index + 1} / ${project.year} / Self-initiated concept</p><h2 class="detail-title" id="detail-title">${project.name}</h2><p class="detail-description">${project.description}</p></div><div class="project-art detail-art ${artwork[index][0]}" aria-hidden="true">${artwork[index][1]}</div><div class="detail-meta"><div><strong>Services</strong>${project.services}</div><div><strong>Year</strong>${project.year}</div><div><strong>Status</strong>Self-initiated concept</div></div><div class="detail-body"><h3>The approach</h3><div><p>${project.approach}</p><p>${project.outcome}</p></div></div><div class="detail-bottom"><span>Next project / 0${(index + 1) % projects.length + 1}</span><button class="detail-next">${next.name} ${arrow}</button></div>`;
+  content.innerHTML = `<div class="detail-header"><p class="detail-label">0${index + 1} / ${project.year} / Self-initiated concept</p><h2 class="detail-title" id="detail-title">${project.name}</h2><p class="detail-description">${project.description}</p></div><div id="interactive-demo"></div><div class="detail-meta"><div><strong>Services</strong>${project.services}</div><div><strong>Year</strong>${project.year}</div><div><strong>Status</strong>Self-initiated concept</div></div><div class="detail-body"><h3>The approach</h3><div><p>${project.approach}</p><p>${project.outcome}</p></div></div><div class="detail-bottom"><span>Next project / 0${(index + 1) % projects.length + 1}</span><button class="detail-next">${next.name} ${arrow}</button></div>`;
+  disposeDemo = mountDemo(content.querySelector('#interactive-demo'), index);
   content.querySelector('.detail-next').addEventListener('click', () => navigateToProject((activeProject + 1) % projects.length));
   document.title = `${project.name} — ${profile.name}`;
   if (!dialog.open) {
@@ -152,6 +158,7 @@ dialog.addEventListener('click', event => {
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
 });
 dialog.addEventListener('close', () => {
+  disposeDemo();
   document.body.classList.remove('is-dialog-open'); document.body.style.overflow = '';
   if (location.hash.startsWith('#project/')) history.replaceState(null, '', projectReturnHash);
   document.title = isAbout ? `About — ${profile.name}` : `${profile.name} — Creative Development`;
@@ -188,6 +195,7 @@ let manuallyPaused = false;
 const pauseButtons = [...document.querySelectorAll('.play-toggle')];
 function updateAnimation() {
   const paused = manuallyPaused || reducedMotion.matches;
+  document.body.classList.toggle('motion-paused', paused);
   heroSimulation.setPaused(paused); aboutSimulation.setPaused(paused);
   pauseButtons.forEach(pauseButton => {
   pauseButton.hidden = reducedMotion.matches;
