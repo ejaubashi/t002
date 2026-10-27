@@ -19,3 +19,35 @@
 .orbit-modes{display:flex;gap:5px;flex-basis:100%;padding-bottom:12px;border-bottom:1px solid #ffffff24}.orbit-modes button{border-radius:3px;min-width:90px}.demo-0 .demo-controls{background:#10132bea}.demo-0 .demo-controls button[aria-pressed=true]{background:#d0f7b5;color:#121a31;border-color:#d0f7b5}.demo-0 .demo-stage[data-mode=wave] .orbit-demo-title{letter-spacing:.18em}.demo-0 .orbit-demo-title{transition:letter-spacing .65s}.demo-1 .demo-controls{background:#f8f3e1ba;backdrop-filter:blur(18px) saturate(.8);border-top:1px solid #fff8;box-shadow:0 -15px 30px #f8f1e722,inset 0 1px 0 #fff8;position:relative}.demo-1 .demo-stage{background:#dfd3be;transition:background .8s}.demo-1 .demo-ceramics{transition:background 1s}.demo-1 .demo-stage[data-finish=sage] .demo-ceramics{background:radial-gradient(ellipse at 40% 30%,#eaf0de,#b9c6b1)}.demo-1 .demo-stage[data-finish=clay] .demo-ceramics{background:radial-gradient(ellipse at 40% 30%,#f7e4d4,#cba493)}.demo-1 .demo-stage[data-finish=ink] .demo-ceramics{background:radial-gradient(ellipse at 40% 30%,#e1e6e6,#99aab2)}.demo-ceramics:after{content:'';position:absolute;inset:0;opacity:.08;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath filter='url(%23n)' opacity='.35' d='M0 0h150v150H0z'/%3E%3C/svg%3E")}.demo-1 .demo-ceramics .form-logo{letter-spacing:-.04em}.demo-record{transition:background .7s,color .7s}.record-artwork{position:absolute;inset:0;opacity:.45;pointer-events:none;transform:translateX(var(--cover-x,0));transition:transform .35s}.record-artwork svg{width:100%;height:100%;stroke-dasharray:900;stroke-dashoffset:0}.motion-playing .record-artwork svg{animation:record-trace 12s ease-in-out infinite alternate}.record-copy,.record-turntable{transition:transform .7s,left .7s,right .7s,font-size .7s}.demo-stage[data-track="1"] .record-copy{font-family:Georgia,serif;font-style:italic;font-size:85px;line-height:.95}.demo-stage[data-track="1"] .record-copy em{font-family:'DM Sans',sans-serif;font-style:normal;font-size:11px;letter-spacing:.15em}.demo-stage[data-track="1"] .record-turntable{right:5%;transform:scale(.88) rotate(8deg)}.demo-stage[data-track="2"] .record-copy{font-size:68px;transform:rotate(-5deg)}.demo-stage[data-track="2"] .record-turntable{right:12%;transform:rotate(-8deg)}.demo-stage[data-track="2"] .record-artwork{opacity:.75}.demo-3 .demo-controls{background:#381a2d}.record-tracks button{border-radius:3px}.demo-3 .demo-controls button[aria-pressed=true]{background:#f4efda}.record-artwork svg{animation-play-state:paused}.motion-playing .record-artwork svg{animation-play-state:running}@keyframes record-trace{to{stroke-dashoffset:750;transform:rotate(3deg) scale(1.05)}}
 @media(max-width:700px){.orbit-modes button{flex:1;min-width:0}.demo-stage[data-track="1"] .record-copy{font-size:60px}.demo-stage[data-track="2"] .record-copy{font-size:46px;left:6%}.demo-stage[data-track="2"] .record-turntable{right:-10%}.demo-stage[data-track="1"] .record-turntable{right:-15%}}
 @media(prefers-reduced-motion:reduce){.record-artwork svg{animation:none!important}.record-artwork,.record-copy,.record-turntable,.demo-record,.demo-ceramics,.orbit-demo-title{transition:none!important}}
+
+/* Direction tokens are scoped to project views; the homepage is untouched. */
+.demo-0{--project-blue:#101759;--project-lime:#caf6a6}
+.demo-0 .demo-stage{background:radial-gradient(ellipse at center,#202f9b,var(--project-blue) 75%)}
+.demo-0 .orbit-demo-title{color:var(--project-lime)}
+.demo-0 .demo-controls button[aria-pressed=true]{background:var(--project-lime);border-color:var(--project-lime)}
+.demo-1{--project-sand:#ba9670;--project-sage:#92a58b;--project-clay:#c37151;--project-glaze:#3b566a}
+/* An interpolable solid base beneath a fixed, transparent studio light. */
+.demo-1 .demo-stage{background-color:#dfd3be;transition:background-color .85s ease}
+.demo-1 .demo-stage[data-finish=sage]{background-color:#d3decc}
+.demo-1 .demo-stage[data-finish=clay]{background-color:#e6cbbc}
+.demo-1 .demo-stage[data-finish=ink]{background-color:#bdccd0}
+.demo-1 .demo-stage .demo-ceramics{background:radial-gradient(ellipse at 32% 20%,#fff8,transparent 75%)}
+.demo-1 .demo-controls{background:#f5f0e0d9;backdrop-filter:blur(14px) saturate(.85);-webkit-backdrop-filter:blur(14px) saturate(.85);box-shadow:inset 0 1px 0 #fff9;isolation:isolate}
+.demo-1 .demo-controls:before{content:'';position:absolute;left:0;right:0;bottom:100%;height:28px;background:linear-gradient(transparent,#f5f0e044);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);mask-image:linear-gradient(transparent,#000);pointer-events:none}
+/* Comfortable touch targets retain small material swatches inside. */
+.demo-controls .finish-picker button{width:44px;height:44px;min-height:44px;border:10px solid #e2dbcd}
+.demo-controls button{min-height:44px}
+.record-layer{position:absolute;inset:0;opacity:0;transition:opacity .55s ease}
+.record-layer.is-selected{opacity:1}
+.record-artwork svg,.motion-playing .record-artwork svg{animation:none}
+.cover-ribbon{transform:translateY(var(--cover-sway,0px));transform-origin:center}
+.cover-rosette{transform:rotate(var(--cover-angle,0deg)) scale(var(--cover-scale,1));transform-origin:50% 50%}
+.cover-signal{transform:translateX(var(--cover-sway,0px));transform-origin:center}
+.record-artwork svg{overflow:visible}
+.record-bars i{transform:scaleY(calc(.3 + var(--beat,.3) * (.45 + mod(var(--i) * 3,7) / 12)))}
+@supports not (backdrop-filter:blur(1px)){.demo-1 .demo-controls{background:#f5f0e0}.demo-1 .demo-controls:before{display:none}}
+@media(max-width:700px){.demo-controls .finish-picker{gap:4px}.demo-controls .finish-picker button{width:44px;height:44px;min-height:44px;border-width:11px}.demo-1 .demo-controls{column-gap:16px}.demo-1 .demo-controls input{width:90px}}
+@media(prefers-reduced-motion:reduce){.demo-1 .demo-stage,.record-layer{transition:none}.record-artwork{transform:none}}
+
+.demo-stage[data-track="1"] .record-copy{font-family:"DM Sans",sans-serif;letter-spacing:-.065em;font-size:78px}
+@media(max-width:700px){.demo-stage[data-track="1"] .record-copy{font-size:58px}}

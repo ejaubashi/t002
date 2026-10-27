@@ -77,4 +77,8 @@ Form & Field has procedural ceramic bump texture, subtle clearcoat, real contact
 
 Good Noise has three original SVG compositions driven by the selected-record state, including matching typography and layout changes. Motion is controlled by the existing play/pause preference. `src/record-artwork.js` contains the vectors; `src/record-audio.js` contains optional generated audio.
 
-Figma tools and an authored Figma/Make file were unavailable during this implementation. These are native browser implementations of the agreed visual direction, not exported Figma shaders. No Rive asset was supplied; the record artwork uses local SVG and JavaScript state rather than a Rive runtime. No Figma or Rive account is required to view the site.
+[Editable Figma studies](https://www.figma.com/design/syEKwt96OJL5sRyae8Wp0X?node-id=2-17) now define the project direction. A custom animated, pointer-responsive Figma shader fill was authored and built in the connected account. See [design/README.md](design/README.md) for the native shader source, try link, visual choices, capability boundaries and browser translation. The website still uses local browser shaders, CSS and SVG; no Figma, Rive or Spline account is required to view it.
+
+Project clocks now stop scheduling while paused, hidden or offscreen. Static ceramics stop rendering after material changes settle. Good Noise crossfades persistent vector layers and gives each record its own movement and rhythm. Audio starts disabled on every open and is created only after an explicit sound action. Its asynchronous activation cannot undo a newer mute or visibility change.
+
+The project lifecycle tests additionally cover desktop/mobile GPU pause and resumption, offscreen behavior, context loss and Canvas recovery, context release, ceramic settling, changed motion preferences, 320px controls, all record states, and audio defaults after reopening. Run `npm test` for the complete suite.
