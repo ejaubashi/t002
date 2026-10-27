@@ -1,7 +1,7 @@
 // Replace these values with your identity and real project information.
 export const profile = {
-  name: 'bettlemax',
-  email: 'hello@bettlemax.example',
+  name: 'Endy J',
+  email: 'endyj@dev.com',
 };
 
 export const projects = [

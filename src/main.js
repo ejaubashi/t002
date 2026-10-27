@@ -27,7 +27,7 @@ projects.forEach((project, index) => {
   button.addEventListener('click', () => navigateToProject(index)); archive.append(button);
 });
 
-document.querySelectorAll('a[href="mailto:hello@bettlemax.example"]').forEach(link => {
+document.querySelectorAll('a[href="mailto:endyj@dev.com"]').forEach(link => {
   link.href = `mailto:${profile.email}`;
   if (link.classList.contains('email-link')) link.firstChild.textContent = profile.email + ' ';
 });

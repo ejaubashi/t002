@@ -4,7 +4,7 @@ const names = ['Orbit®', 'Form & Field', 'Offgrid', 'Good Noise'];
 
 test('desktop: wheel, arrows, and keyboard navigate the horizontal gallery', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'bettlemax', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Endy J', exact: true })).toBeVisible();
   await page.mouse.move(800, 600);
   await page.mouse.wheel(0, 600);
   await expect.poll(() => page.locator('#work-track').evaluate(el => el.scrollLeft)).toBeGreaterThan(400);
@@ -58,7 +58,7 @@ test('about navigation, biography, contact, clipboard, and return to work', asyn
   await page.getByRole('button', { name: 'Next section', exact: true }).click();
   await page.getByRole('button', { name: 'Copy email to clipboard' }).click();
   await expect(page.getByRole('status')).toHaveText('Email copied. Say hello!');
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('hello@bettlemax.example');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('endyj@dev.com');
   await page.getByRole('navigation').getByRole('link', { name: 'Work', exact: true }).click();
   await expect(page.locator('#work-track')).toBeVisible();
 });

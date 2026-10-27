@@ -1,8 +1,8 @@
-# bettlemax — creative portfolio
+# Endy J — creative portfolio
 
 A complete responsive portfolio inspired by the interaction and layout of patrickheng.com: a fullscreen orange Canvas playground, horizontal project gallery, outlined project titles, project detail overlays, and a separate purple about experience. On phones, content flows vertically with native scrolling.
 
-The implementation uses original code and CSS-generated project artwork. The portfolio uses the name “bettlemax.” The biography is suggested copy; all four projects are self-initiated concepts. The address `hello@bettlemax.example` is a placeholder and must be replaced with a working address.
+The implementation uses original code and CSS-generated project artwork. The portfolio uses the name “Endy J.” The biography is suggested copy; all four projects are self-initiated concepts. The contact address is `endyj@dev.com`.
 
 ## Develop
 
@@ -40,7 +40,7 @@ npm run preview
 
 The project gallery and archive both open detailed case studies. `#project/orbit`, `#project/form-and-field`, `#project/offgrid`, and `#project/good-noise` can be shared directly. `#about`, `#bio`, and `#contact` link to the about sections. These hash routes work on a static host without rewrite configuration.
 
-No backend, API key, or external image/font service is required. Anton and DM Sans are bundled locally through their Fontsource packages. The included concept projects are not live shops or client websites. Replace the example email before publishing the portfolio publicly.
+No backend, API key, or external image/font service is required. Anton and DM Sans are bundled locally through their Fontsource packages. The included concept projects are not live shops or client websites. 
 
 ## GitHub Pages deployment
 
