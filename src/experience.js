@@ -2,11 +2,19 @@ import './experience.css';
 
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-let portal = null, portalAnimation = null;
+let portal = null, portalAnimation = null, worldAnimations = [];
 
 export function projectEntrance(dialog, source, destination) {
-  portalAnimation?.cancel(); portal?.remove();
+  cancelEntrance();
   if (motion.matches) return;
+  if (dialog.classList.contains('project-world')) {
+    const stage = destination.querySelector('.demo-stage');
+    const title = stage?.querySelector('.orbit-demo-title,.world-form-title,.landscape-word,.record-copy');
+    worldAnimations.push(dialog.animate([{opacity:0},{opacity:1}],{duration:500,easing:'ease-out'}));
+    if(stage)worldAnimations.push(stage.animate([{transform:'scale(1.045)',opacity:.55},{transform:'scale(1)',opacity:1}],{duration:1100,easing:'cubic-bezier(.16,1,.3,1)'}));
+    if(title)worldAnimations.push(title.animate([{transform:'translateY(35px)',opacity:0},{transform:'translateY(0)',opacity:1}],{duration:1000,easing:'cubic-bezier(.42,0,.58,1)'}));
+    return;
+  }
   const rect = source?.getBoundingClientRect();
   if (!rect || rect.right < 0 || rect.left > innerWidth || rect.bottom < 0 || rect.top > innerHeight) {
     dialog.animate([{ opacity: 0, transform: 'translateY(24px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.16,1,.3,1)' });
@@ -28,7 +36,7 @@ export function projectEntrance(dialog, source, destination) {
   destination.animate([{ opacity: 0, transform: 'translateY(20px)' }, { opacity: 1, transform: 'none' }], { duration: 650, easing: 'cubic-bezier(.16,1,.3,1)' });
 }
 
-export function cancelEntrance() { portalAnimation?.cancel(); portal?.remove(); portal = null; }
+export function cancelEntrance() { portalAnimation?.cancel(); portal?.remove(); portal = null; worldAnimations.forEach(a=>a.cancel());worldAnimations=[]; }
 
 export function initExperience() {
   const panels = [...document.querySelectorAll('.project-panel')];

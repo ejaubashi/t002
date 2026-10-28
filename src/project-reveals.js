@@ -1,7 +1,7 @@
 /** Section reveals belong to this dialog and are cancelled on replacement or close. */
 export function mountProjectReveals(root) {
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  const nodes = [...root.querySelectorAll('.detail-label,.detail-title,.detail-description,.demo-shell,.detail-meta>div,.detail-body h3,.detail-body p,.detail-bottom')];
+  const nodes = [...root.querySelectorAll('.detail-label,.detail-title,.world-introduction p,.detail-meta>div,.detail-body h3,.detail-body p,.detail-bottom')];
   const animations = new Set();
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {

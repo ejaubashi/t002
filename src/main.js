@@ -9,6 +9,12 @@ import { mountProjectReveals } from './project-reveals.js';
 import { initExperience, projectEntrance, cancelEntrance } from './experience.js';
 import { profile, projects } from './data.js';
 import { createPlayground } from './playground.js';
+import { worlds, worldArtwork } from './worlds.js';
+import { mountWorldGallery } from './world-gallery.js';
+import { mountWorldJourney } from './world-journey.js';
+import '@fontsource/cormorant-garamond/latin-400.css';
+import '@fontsource/cormorant-garamond/latin-400-italic.css';
+import './worlds.css';
 
 const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 20 4M4 4h16v16"/></svg>';
 const projectPanels = document.querySelector('#project-panels');
@@ -16,12 +22,13 @@ const archive = document.querySelector('#archive-list');
 // Artwork is local, developer-authored SVG/CSS markup, not user-provided HTML.
 projects.forEach((project, index) => {
   const panel = document.createElement('article');
-  panel.className = 'panel project-panel'; panel.id = project.id;
+  const world = worlds[index];
+  panel.className = 'panel project-panel world-gallery'; panel.id = project.id; panel.dataset.world = String(index);
   panel.style.setProperty('--accent', project.accent);
   panel.style.setProperty('--secondary', project.secondary);
   panel.style.setProperty('--mobile-title', `${Math.min(12.4, 180 / Math.max(...project.lines.map(line => line.length)))}vw`);
   panel.setAttribute('aria-labelledby', `${project.id}-title`);
-  panel.innerHTML = `<div class="shape shape-circle"></div><div class="shape shape-triangle"></div><div class="shape shape-dot"></div><div class="shape shape-ring"></div><span class="project-index">0${index + 1} / ${project.year} — CONCEPT PROJECT</span><div class="project-preview" aria-hidden="true"><div class="project-art ${artwork[index][0]}">${artwork[index][1]}</div></div><h2 class="project-heading" id="${project.id}-title"><span>${project.lines[0]}</span><span>${project.lines[1]}</span></h2><p class="project-caption">${project.caption}</p><button class="project-hit" aria-label="View ${project.name} project"><span>Try the live concept ${arrow}</span></button>`;
+  panel.innerHTML = `<span class="world-brand">${world.brand}</span><span class="project-index">SELECTED WORK / 0${index + 1}</span><div class="project-preview" aria-hidden="true"><div class="project-art ${artwork[index][0]}">${worldArtwork(index)}</div></div><h2 class="project-heading" id="${project.id}-title" aria-label="${project.name}"><span>${world.lines[0]}</span>${world.lines[1] ? `<span>${world.lines[1]}</span>` : ''}</h2><p class="project-caption">${world.caption}</p><span class="world-hint">${world.hint}</span><button class="project-hit" aria-label="View ${project.name} project"><span>Enter the experience ${arrow}</span></button>`;
   panel.querySelector('button').addEventListener('click', () => navigateToProject(index));
   projectPanels.append(panel);
   const button = document.createElement('button');
@@ -31,6 +38,7 @@ projects.forEach((project, index) => {
 });
 
 observePreviews();
+mountWorldGallery();
 
 document.querySelectorAll('a[href="mailto:endyj@dev.com"]').forEach(link => {
   link.href = `mailto:${profile.email}`;
@@ -144,10 +152,16 @@ function renderProject(index) {
   activeProject = index;
   const project = projects[index];
   const next = projects[(index + 1) % projects.length];
-  content.innerHTML = `<div class="detail-header"><p class="detail-label">0${index + 1} / ${project.year} / Self-initiated concept</p><h2 class="detail-title" id="detail-title">${project.name}</h2><p class="detail-description">${project.description}</p></div><div id="interactive-demo"></div><div class="detail-meta"><div><strong>Services</strong>${project.services}</div><div><strong>Year</strong>${project.year}</div><div><strong>Status</strong>Self-initiated concept</div></div><div class="detail-body"><h3>The approach</h3><div><p>${project.approach}</p><p>${project.outcome}</p></div></div><div class="detail-bottom"><span>Next project / 0${(index + 1) % projects.length + 1}</span><button class="detail-next">${next.name} ${arrow}</button></div>`;
+  const world = worlds[index];
+  dialog.className = `project-world world-${index}`;
+  dialog.querySelector('.dialog-top>span').textContent = `${profile.name} / ${project.name}`;
+  content.innerHTML = `<section class="world-hero"><div class="world-scene"><div class="detail-header"><p class="detail-label">0${index + 1} / ${project.year} / SELF-INITIATED CONCEPT</p><h2 class="detail-title" id="detail-title">${project.name}</h2></div><div id="interactive-demo"></div><span class="world-scroll-hint" aria-hidden="true">SCROLL TO UNFOLD THE STORY ↓</span></div><div class="world-scroll-copy"><span class="world-chapter-index">01 / THE FEELING</span><h3>${world.chapter.replaceAll('\n','<br>')}</h3><p>${world.text}</p></div></section><section class="world-introduction"><span class="world-chapter-index">02 / THE IDEA</span><p>${project.description}</p></section><div class="detail-meta"><div><strong>Services</strong>${project.services}</div><div><strong>Year</strong>${project.year}</div><div><strong>Status</strong>Self-initiated concept</div></div><div class="detail-body"><h3>The approach</h3><div><p>${project.approach}</p><p>${project.outcome}</p></div></div><div class="detail-bottom"><span>Next world / 0${(index + 1) % projects.length + 1}</span><button class="detail-next">${next.name} ${arrow}</button></div>`;
   const stopDemo = mountDemo(content.querySelector('#interactive-demo'), index);
   const stopReveals = mountProjectReveals(content);
-  disposeDemo = () => { stopDemo(); stopReveals(); };
+  const stopJourney = mountWorldJourney(content.querySelector('.world-hero'), value => {
+    content.querySelector('#interactive-demo')?.dispatchEvent(new CustomEvent('world-journey', { detail:value }));
+  });
+  disposeDemo = () => { stopDemo(); stopReveals(); stopJourney(); };
   content.querySelector('.detail-next').addEventListener('click', () => navigateToProject((activeProject + 1) % projects.length));
   document.title = `${project.name} — ${profile.name}`;
   if (!dialog.open) {

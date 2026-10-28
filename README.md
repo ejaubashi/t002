@@ -93,3 +93,13 @@ The opening homepage is preserved. Project sections use layered scroll parallax,
 - Good Noise: drag the vinyl to spin it, or focus it and use arrow keys. **Flip sleeve** reveals record-specific artwork notes on the reverse. Keyboard focus pauses the rotating record while it is being adjusted. Sound remains optional and off by default.
 
 Horizontal gestures preserve native vertical touch scrolling. Reduced motion disables automatic transitions; explicit controls still work. The record stops animating while its reverse is shown. Dialog reveal animations, gesture listeners, pointer captures and project renderers are released when the project closes or changes.
+
+## Immersive project worlds
+
+[Four full-screen Figma compositions](https://www.figma.com/design/syEKwt96OJL5sRyae8Wp0X?node-id=22-225) replace the former postcard-style project gallery. Orbit is an oversized blue-and-lime audiovisual world; Form & Field pairs locally bundled Cormorant Garamond typography with a ceramic studio; Offgrid becomes an edge-to-edge landscape; Good Noise becomes a full record sleeve.
+
+Project views now open edge to edge. Native scrolling holds the artwork in view while the title gives way to a second narrative and the scene changes pose. Wheel and touch scrolling are not intercepted. With reduced motion, that narrative appears in normal document flow.
+
+Orbit and Form & Field gallery renderers are imported only when their project fills a meaningful part of the viewport. They are disposed when leaving it, opening a project, or hiding the tab. The first orange screen remains unchanged and does not import Three.js. Graphics fallbacks reuse the original vector construction authored for the Figma worlds; no complete-screen screenshot is used as an implementation asset.
+
+The Figma file includes native five-second orbital and vinyl timelines, plus a one-second title reveal. The Figma Starter plan reached its MCP context-read limit after the designs and motion tracks were saved; further motion-context and asset exports were unavailable. The authoring source is retained in `design/immersive-worlds-source.js`. Browser motion is implemented with CSS, the existing local renderer, and shared project clocks, preserving the Vite/JavaScript architecture.

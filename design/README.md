@@ -27,3 +27,16 @@ The account reports Code Layers enabled. `.figma/make/` contains the lifecycle s
 ## Lifecycle and access
 
 All project controls use native buttons and sliders with accessible names and selected states. Reduced motion starts still and disables automatic transitions. Motion can be explicitly enabled. Project clocks stop scheduling while paused, offscreen or hidden. Opening Orbit or Form & Field imports graphics lazily unless Save-Data is enabled; closing releases contexts, geometry, materials, textures, observers, listeners and audio. Context loss returns Orbit to its Canvas renderer.
+
+## Immersive composition revision
+
+The later revision changes the presentation of the entire project world, rather than adding controls inside the old demo card. Desktop compositions are 1440 × 900 and remain editable text, vectors and component instances:
+
+- [Orbit](https://www.figma.com/design/syEKwt96OJL5sRyae8Wp0X?node-id=22-225)
+- [Form & Field](https://www.figma.com/design/syEKwt96OJL5sRyae8Wp0X?node-id=22-226)
+- [Offgrid](https://www.figma.com/design/syEKwt96OJL5sRyae8Wp0X?node-id=22-227)
+- [Good Noise](https://www.figma.com/design/syEKwt96OJL5sRyae8Wp0X?node-id=22-228)
+
+Orbit's sculpture translates vertically from 0 → -20 → 0 px and rotates 0 → 32 → 0 degrees over five seconds with ease-in-out timing. Its title reveals over one second from 35 px below its resting position. The vinyl rotates 120 degrees clockwise over five seconds. These native tracks were saved and read back successfully.
+
+Further design/motion-context reads and direct exports reached the Starter plan's tool limit. Asset URL retrieval also returned HTTP 403. The browser therefore retains the same locally authored vector construction used to build the editable scenes, with live 3D replacing dynamic sculpture slots where supported. It has no temporary Figma asset URLs, Figma runtime requirement, or full-UI raster layers.

@@ -3,9 +3,10 @@ import { createSignalField } from './orbit-shaders.js';
 import { createProjectClock } from './project-clock.js';
 
 /** Project-only graphics, mounted lazily and fully disposed on close. */
-export function mountProjectSculpture(stage, index, { onFallback } = {}) {
+export function mountProjectSculpture(stage, index, { onFallback, presentation = 'demo', owner = 'project' } = {}) {
+  const world = presentation === 'world';
   const canvas = document.createElement('canvas');
-  canvas.className = 'project-sculpture'; canvas.setAttribute('aria-hidden', 'true');
+  canvas.className = 'project-sculpture'; canvas.dataset.graphicsOwner = owner; canvas.setAttribute('aria-hidden', 'true');
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: innerWidth >= 700, powerPreference: 'low-power' }); }
   catch { return null; }
@@ -16,8 +17,9 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
   renderer.toneMappingExposure = index === 0 ? 1.2 : 1.05;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, .1, 30);
-  camera.position.set(0, .25, 7.5);
+  camera.position.set(0, .25, world && mobile ? 12 : 7.5);
   const group = new THREE.Group(); scene.add(group);
+  if (world) { group.position.x = mobile ? .15 : 1.2; if (index === 0 && mobile) group.position.y = -.65; }
   const geometries = [], materials = [], textures = [], rings = [];
   const abort = new AbortController();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -27,7 +29,7 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
   const weights = new THREE.Vector3(0, 1, 0), targetWeights = weights.clone();
   const targetColor = new THREE.Color(0xba9670);
   let roughnessTarget = .72, coatTarget = .12;
-  let pulse = 0, inspection = 0, inspectionTarget = 0, inspectionChanging = false;
+  let pulse = 0, inspection = 0, inspectionTarget = 0, inspectionChanging = false, journey = 0;
   const makeMaterial = options => { const m = new THREE.MeshStandardMaterial(options); materials.push(m); return m; };
   function mesh(geometry, material, parent = group) {
     geometries.push(geometry); const object = new THREE.Mesh(geometry, material); parent.add(object); return object;
@@ -81,7 +83,7 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
       vase.position.set(i === 0 ? -.65 : .8, -.95, i === 0 ? .12 : -.18);
       vase.castShadow = true; vase.receiveShadow = true; group.add(vase);
     }
-    camera.position.set(0, 2.0, mobile ? 7.6 : 7.1); camera.lookAt(0, .12, 0);
+    camera.position.set(0, world && mobile ? 3.5 : 2.0, world && mobile ? 13.5 : mobile ? 7.6 : 7.1); camera.lookAt(0, world && mobile ? 1.25 : .12, 0);
   }
 
   function syncClock() { clock.setRunning(!paused && (index === 0 || finishChanging || inspectionChanging)); }
@@ -95,7 +97,8 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
       signalUniforms.uPulse.value = pulse;
       group.scale.setScalar(1 + pulse * .13);
       signalUniforms.uPointer.value.set(pointerX + .5, .5 - pointerY);
-      group.rotation.set(.3 + pointerY * .2, time * .1 + pointerX * .3 + phase, -.3);
+      group.rotation.set(.3 + pointerY * .2 + journey * .35, time * .1 + pointerX * .3 + phase + journey * .8, -.3 + journey * .2 + (world ? (1-Math.cos(time*Math.PI*2/5))*.28 : 0));
+      if(world) group.position.x = (mobile ? .15 : 1.2) + journey * .45;
       rings.forEach((ring, i) => {
         ring.rotation.x = i * .8 * weights.y + (i - 1) * .22 * weights.x + i * 1.1 * weights.z;
         ring.rotation.y = i * .62 * weights.y + Math.sin(time * .3 + i) * .6 * weights.z;
@@ -116,9 +119,9 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
         inspection = THREE.MathUtils.lerp(inspection, inspectionTarget, blend);
         if (Math.abs(inspection - inspectionTarget) < .001) { inspection = inspectionTarget; inspectionChanging = false; syncClock(); }
       }
-      camera.position.z = (mobile ? 7.6 : 7.1) - inspection * 1.5;
-      camera.lookAt(-inspection * .15, .12 + inspection * .12, 0);
-      group.rotation.y = turn * Math.PI / 180 + pointerX * .12;
+      camera.position.z = (world && mobile ? 13.5 : mobile ? 7.6 : 7.1) - inspection * 1.5 - journey * .6;
+      camera.lookAt(-inspection * .15, (world && mobile ? 1.25 : .12) + inspection * .12, 0);
+      group.rotation.y = turn * Math.PI / 180 + pointerX * .12 + journey * .5;
     }
     renderer.render(scene, camera);
   }
@@ -128,7 +131,7 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
     const rect = stage.getBoundingClientRect();
     pointerX = (event.clientX - rect.left) / rect.width - .5;
     pointerY = (event.clientY - rect.top) / rect.height - .5;
-    render();
+    if (paused || index !== 0) render();
   }, { signal: abort.signal });
   stage.addEventListener('pointerleave', () => { pointerX = pointerY = 0; render(); }, { signal: abort.signal });
   const resize = new ResizeObserver(() => {
@@ -145,7 +148,8 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
       targetWeights.set(mode === 0 ? 1 : 0, mode === 1 ? 1 : 0, mode === 2 ? 1 : 0);
       render(); syncClock();
     },
-    setPointer(x, y) { pointerX = x; pointerY = y; render(); },
+    setJourney(value) { if(Math.abs(value-journey)<.001)return;journey=value;render(); },
+    setPointer(x, y) { pointerX = x; pointerY = y; if (paused || index !== 0) render(); },
     pulse() { phase += .18; pulse = paused ? 0 : 1; render(); },
     setInspection(value) { paused = reduced.matches; inspectionTarget = value ? 1 : 0; inspectionChanging = true; render(); syncClock(); },
     setTempo(value) { tempo = Number(value); },

@@ -2,6 +2,7 @@ import { recordArtwork, records } from './record-artwork.js';
 import { createProjectClock } from './project-clock.js';
 import { createOrbitCanvas } from './orbit-canvas.js';
 import { bindHorizontalDrag } from './project-gestures.js';
+import { worlds } from './worlds.js';
 import { artwork } from './artwork.js';
 import '@fontsource/dm-sans/latin-400-italic.css';
 import './demos.css';
@@ -15,7 +16,8 @@ export function mountDemo(root, index) {
   const listen = (element, event, handler) => element.addEventListener(event, handler, { signal });
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const cleanups = [];
-  let sculpture = null, disposed = false;
+  let sculpture = null, disposed = false, journey = 0;
+  listen(root, 'world-journey', event => { journey = event.detail; sculpture?.setJourney(journey); });
   let orbitMode='orbit';
   let sound=null,soundEnabled=false,selectedTrack=0;
   root.className = `demo-shell demo-${index}`;
@@ -54,7 +56,7 @@ export function mountDemo(root, index) {
   cleanups.push(() => observer.disconnect());
 
   if (index === 0) {
-    stage.innerHTML = '<canvas aria-hidden="true"></canvas><div class="orbit-demo-title">ORBIT<span>SOUND, REIMAGINED.</span></div>';
+    stage.innerHTML = '<canvas aria-hidden="true"></canvas><div class="orbit-demo-title">SOUND<br>IN MOTION.<span>SOUND, REIMAGINED.</span></div>';
     controls.innerHTML = '<div class="orbit-modes" role="group" aria-label="Signal mode"><button data-mode="wave" aria-pressed="false">Wave</button><button data-mode="orbit" aria-pressed="true">Orbit</button><button data-mode="interference" aria-pressed="false">Interference</button></div><label>Tempo <input aria-label="Orbit tempo" type="range" min="0.3" max="2" step="0.1" value="1"></label><button class="burst">Remix shape</button><button class="signal-pulse">Pulse signal</button><button class="motion-toggle"></button>';
     let x = 0, y = 0, remix = 0;
     const tempo = controls.querySelector('input');
@@ -123,6 +125,7 @@ export function mountDemo(root, index) {
       event.currentTarget.textContent = selected ? 'View collection' : 'Inspect form';
       stage.classList.toggle('is-inspecting', selected); sculpture?.setInspection(selected);
     });
+    stage.insertAdjacentHTML('beforeend', '<div class="world-form-title" aria-hidden="true">Objects<br><em>with soul.</em></div>');
     stage.dataset.finish = 'sand';
     const onPreference = () => { paused = reduced.matches; syncMotion(); };
     reduced.addEventListener('change', onPreference);
@@ -275,8 +278,8 @@ export function mountDemo(root, index) {
   if (index < 2 && !navigator.connection?.saveData) {
     import('./sculpture.js').then(module => {
       if (disposed) return;
-      sculpture = module.mountProjectSculpture(stage, index, { onFallback: () => { sculpture = null; clock.invalidate(); syncMotion(); } });
-      syncMotion();
+      sculpture = module.mountProjectSculpture(stage, index, { presentation:'world', onFallback: () => { sculpture = null; clock.invalidate(); syncMotion(); } });
+      syncMotion(); sculpture?.setJourney(journey);
       if (index === 0) { sculpture?.setTempo(controls.querySelector('input').value);sculpture?.setMode(orbitMode); }
       else { sculpture?.setFinish(stage.dataset.finish); sculpture?.setTurn(controls.querySelector('input').value); sculpture?.setInspection(stage.classList.contains('is-inspecting')); }
     }).catch(() => {});
