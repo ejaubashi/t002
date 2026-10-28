@@ -5,7 +5,7 @@ export function createSignalField(scene, resources) {
   const uniforms = {
     uTime: { value: 0 }, uPointer: { value: new THREE.Vector2(.5, .5) },
     uModes: { value: new THREE.Vector3(0, 1, 0) },
-    uAspect: { value: 1.5 }, uPixelRatio: { value: 1 },
+    uPulse: { value: 0 }, uAspect: { value: 1.5 }, uPixelRatio: { value: 1 },
   };
   const fieldGeometry = new THREE.PlaneGeometry(2, 2);
   const fieldMaterial = new THREE.ShaderMaterial({
@@ -14,7 +14,7 @@ export function createSignalField(scene, resources) {
     fragmentShader: `
       varying vec2 vUv;
       uniform float uTime; uniform vec2 uPointer;
-      uniform vec3 uModes; uniform float uAspect;
+      uniform vec3 uModes; uniform float uAspect; uniform float uPulse;
       float line(float x,float width){return 1.-smoothstep(0.,width,abs(sin(x)));}
       void main(){
         vec2 p=(vUv-.5)*vec2(uAspect,1.);
@@ -28,7 +28,8 @@ export function createSignalField(scene, resources) {
         float a=length(p-vec2(-.19,0.));
         float b=length(p-vec2(.19,0.));
         float interference=line(a*95.-t,.15)*.55+line(b*95.+t*.7,.15)*.55;
-        float ink=dot(vec3(wave,orbit,interference),uModes);
+        float ripple=line(length(d)*80.-(1.-uPulse)*24.,.24)*uPulse;
+        float ink=dot(vec3(wave,orbit,interference),uModes)+ripple*.65;
         float fade=1.-smoothstep(.22,.85,length(p));
         vec3 color=mix(vec3(.32,.58,.9),vec3(.79,.97,.65),.7);
         gl_FragColor=vec4(color,(ink*.28+lens*.02)*fade);
@@ -47,13 +48,13 @@ export function createSignalField(scene, resources) {
   const material = new THREE.ShaderMaterial({
     uniforms, transparent: true, depthWrite: false,
     vertexShader: `uniform float uTime;uniform vec3 uModes;uniform float uPixelRatio;
-      uniform vec2 uPointer;varying float vFade;
+      uniform vec2 uPointer;uniform float uPulse;varying float vFade;
       void main(){vec3 p=position;float a=atan(p.y,p.x)+uTime*.035;float r=length(p.xy);
       vec3 orbit=vec3(cos(a)*r,sin(a)*r,p.z);
       vec3 wave=vec3(p.x,sin(p.x*3.+uTime)*.45+p.y*.22,p.z);
       vec3 interference=vec3(p.x,p.y,sin(p.x*3.+uTime)*cos(p.y*3.-uTime)*.5);
       p=wave*uModes.x+orbit*uModes.y+interference*uModes.z;
-      vec2 d=p.xy-(uPointer-.5)*4.;p.xy+=d*exp(-dot(d,d)*2.)*.12;
+      vec2 d=p.xy-(uPointer-.5)*4.;p.xy+=d*exp(-dot(d,d)*2.)*(.12+uPulse*.45);
       vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;
       gl_PointSize=clamp(14./-mv.z,1.,3.)*uPixelRatio;
       vFade=.2+.35*(.5+.5*sin(position.x*8.+uTime));}`,

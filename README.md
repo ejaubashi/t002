@@ -82,3 +82,14 @@ Good Noise has three original SVG compositions driven by the selected-record sta
 Project clocks now stop scheduling while paused, hidden or offscreen. Static ceramics stop rendering after material changes settle. Good Noise crossfades persistent vector layers and gives each record its own movement and rhythm. Audio starts disabled on every open and is created only after an explicit sound action. Its asynchronous activation cannot undo a newer mute or visibility change.
 
 The project lifecycle tests additionally cover desktop/mobile GPU pause and resumption, offscreen behavior, context loss and Canvas recovery, context release, ceramic settling, changed motion preferences, 320px controls, all record states, and audio defaults after reopening. Run `npm test` for the complete suite.
+
+## Tactile project interactions
+
+The opening homepage is preserved. Project sections use layered scroll parallax, artwork reveals, pointer tilt and keyboard focus feedback. Case-study text reveals as it enters the dialog viewport.
+
+- Orbit: tap the scene or use **Pulse signal** to send a ripple through the signal field and particles. Focus the scene and use arrow keys to move its lens; Enter/Space pulses it.
+- Form & Field: drag horizontally to turn the vessels, or use the existing Turn slider. **Inspect form** moves into a closer camera composition; **View collection** returns.
+- Offgrid: drag the horizon or use its slider/presets to move through dawn, day, dusk and night. The sky, ridges, sun and moon change together; quiet clouds move while motion is enabled. Arrow keys/Home/End work on the focused scene.
+- Good Noise: drag the vinyl to spin it, or focus it and use arrow keys. **Flip sleeve** reveals record-specific artwork notes on the reverse. Keyboard focus pauses the rotating record while it is being adjusted. Sound remains optional and off by default.
+
+Horizontal gestures preserve native vertical touch scrolling. Reduced motion disables automatic transitions; explicit controls still work. The record stops animating while its reverse is shown. Dialog reveal animations, gesture listeners, pointer captures and project renderers are released when the project closes or changes.

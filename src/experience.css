@@ -4,3 +4,22 @@
 @media(max-width:1000px) and (min-width:701px){.project-preview{width:270px;height:180px}}
 @media(max-width:700px){.project-preview{width:48vw;height:31vw}.experience-cursor{display:none}.project-panel:hover .project-preview{transform:rotate(-3deg)}}
 @media(prefers-reduced-motion:reduce){.project-panel.is-inview .project-heading,.project-panel.is-inview .project-caption{animation:none!important}.experience-cursor{display:none!important}.project-panel:hover .project-preview{transform:rotate(3deg)}}
+
+/* Motion is confined to the project gallery and project dialogs. */
+.project-panel .project-preview{transform:perspective(900px) translateY(var(--scene-y,0px)) rotate(calc(3deg + var(--scene-turn,0deg) * .2));transition:transform .55s cubic-bezier(.16,1,.3,1),box-shadow .55s}
+.project-panel:hover .project-preview,.project-panel:focus-within .project-preview{transform:perspective(900px) translateY(calc(var(--scene-y,0px) - 10px)) rotateX(var(--tilt-y,0deg)) rotateY(var(--tilt-x,0deg)) rotate(-3deg) scale(1.08)}
+.project-panel.is-inview .shape-circle{transform:translate(calc(var(--scene-x,0px) * -.8),var(--scene-y,0px)) scale(1.035)}
+.project-panel.is-inview .shape-triangle{transform:translateX(var(--scene-x,0px)) rotate(calc(17deg + var(--scene-turn,0deg)))}
+.project-panel.is-inview .shape-ring{transform:translate(calc(var(--scene-x,0px) * -1.5),calc(var(--scene-y,0px) * -.5)) rotate(var(--scene-turn,0deg))}
+.project-panel.is-inview .project-heading{animation:section-type-in .95s cubic-bezier(.16,1,.3,1) both}
+.project-panel.is-inview .project-preview{animation:section-image-in 1.1s cubic-bezier(.16,1,.3,1) both}
+.project-panel .project-hit>span{transition:gap .35s,border-color .35s}
+.project-panel:hover .project-hit>span,.project-panel:focus-within .project-hit>span{gap:34px;border-color:#141414}
+.project-panel .project-hit>span:after{content:'';position:absolute;left:0;bottom:-1px;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.project-panel:hover .project-hit>span:after,.project-panel:focus-within .project-hit>span:after{transform:scaleX(1)}
+@keyframes section-type-in{from{opacity:0;clip-path:inset(100% 0 0);transform:translateY(30px)}to{opacity:1;clip-path:inset(0);transform:none}}
+@keyframes section-image-in{from{opacity:0;clip-path:inset(0 0 100% 0)}to{opacity:1;clip-path:inset(0)}}
+@media(max-width:700px){.project-panel:hover .project-preview,.project-panel:focus-within .project-preview{transform:translateY(var(--scene-y,0px)) rotate(-3deg) scale(1.02)}}
+@media(prefers-reduced-motion:reduce){.project-panel .project-preview,.project-panel.is-inview .project-preview,.project-panel.is-inview .project-heading{animation:none!important;transition:none!important;clip-path:none}.project-panel .shape,.project-panel:hover .project-preview,.project-panel:focus-within .project-preview{transform:none!important;transition:none!important}}
+.motion-paused .project-panel .project-preview,.motion-paused .project-panel .project-heading{animation:none!important}
+.motion-paused .project-panel .shape,.motion-paused .project-panel .project-preview{transform:none!important;transition:none!important}

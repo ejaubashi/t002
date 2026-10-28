@@ -27,6 +27,7 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
   const weights = new THREE.Vector3(0, 1, 0), targetWeights = weights.clone();
   const targetColor = new THREE.Color(0xba9670);
   let roughnessTarget = .72, coatTarget = .12;
+  let pulse = 0, inspection = 0, inspectionTarget = 0, inspectionChanging = false;
   const makeMaterial = options => { const m = new THREE.MeshStandardMaterial(options); materials.push(m); return m; };
   function mesh(geometry, material, parent = group) {
     geometries.push(geometry); const object = new THREE.Mesh(geometry, material); parent.add(object); return object;
@@ -83,13 +84,16 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
     camera.position.set(0, 2.0, mobile ? 7.6 : 7.1); camera.lookAt(0, .12, 0);
   }
 
-  function syncClock() { clock.setRunning(!paused && (index === 0 || finishChanging)); }
+  function syncClock() { clock.setRunning(!paused && (index === 0 || finishChanging || inspectionChanging)); }
   function render(delta = 0) {
     if (disposed) return;
     const blend = paused ? 1 : 1 - Math.exp(-delta * 8);
     if (index === 0) {
       weights.lerp(targetWeights, blend); signalUniforms.uModes.value.copy(weights);
       signalUniforms.uTime.value = time + phase;
+      pulse = paused ? 0 : pulse * Math.exp(-delta * 3.2);
+      signalUniforms.uPulse.value = pulse;
+      group.scale.setScalar(1 + pulse * .13);
       signalUniforms.uPointer.value.set(pointerX + .5, .5 - pointerY);
       group.rotation.set(.3 + pointerY * .2, time * .1 + pointerX * .3 + phase, -.3);
       rings.forEach((ring, i) => {
@@ -108,6 +112,12 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
           finishChanging = false; syncClock();
         }
       }
+      if (inspectionChanging) {
+        inspection = THREE.MathUtils.lerp(inspection, inspectionTarget, blend);
+        if (Math.abs(inspection - inspectionTarget) < .001) { inspection = inspectionTarget; inspectionChanging = false; syncClock(); }
+      }
+      camera.position.z = (mobile ? 7.6 : 7.1) - inspection * 1.5;
+      camera.lookAt(-inspection * .15, .12 + inspection * .12, 0);
       group.rotation.y = turn * Math.PI / 180 + pointerX * .12;
     }
     renderer.render(scene, camera);
@@ -129,16 +139,21 @@ export function mountProjectSculpture(stage, index, { onFallback } = {}) {
   });
   const intersection = new IntersectionObserver(([entry]) => clock.setVisible(entry.isIntersecting));
   const api = {
-    setPaused(value) { paused = value; render(); syncClock(); },
+    setPaused(value) { if (paused === value) return; paused = value; render(); syncClock(); },
     setMode(value) {
       mode = ['wave', 'orbit', 'interference'].indexOf(value); if (mode < 0) mode = 1;
       targetWeights.set(mode === 0 ? 1 : 0, mode === 1 ? 1 : 0, mode === 2 ? 1 : 0);
       render(); syncClock();
     },
+    setPointer(x, y) { pointerX = x; pointerY = y; render(); },
+    pulse() { phase += .18; pulse = paused ? 0 : 1; render(); },
+    setInspection(value) { paused = reduced.matches; inspectionTarget = value ? 1 : 0; inspectionChanging = true; render(); syncClock(); },
     setTempo(value) { tempo = Number(value); },
     remix() { phase += .9; render(); },
-    setTurn(value) { turn = Number(value); render(); },
+    setTurn(value) { paused = reduced.matches; turn = Number(value); render(); syncClock(); },
     setFinish(value) {
+      // Preference events may arrive after a control action; read the live value.
+      paused = reduced.matches;
       targetColor.set({ sand:'#ba9670', sage:'#92a58b', clay:'#c37151', ink:'#3b566a' }[value] || '#ba9670');
       roughnessTarget = { sand:.72, sage:.84, clay:.64, ink:.34 }[value] ?? .72;
       coatTarget = { sand:.12, sage:.04, clay:.16, ink:.5 }[value] ?? .12;

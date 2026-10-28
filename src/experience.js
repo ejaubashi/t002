@@ -31,23 +31,54 @@ export function projectEntrance(dialog, source, destination) {
 export function cancelEntrance() { portalAnimation?.cancel(); portal?.remove(); portal = null; }
 
 export function initExperience() {
+  const panels = [...document.querySelectorAll('.project-panel')];
+  let scheduled = null, userPaused = document.body.classList.contains('motion-paused');
+  function updateScene() {
+    scheduled = null;
+    if (motion.matches || userPaused) return;
+    const vertical = innerWidth <= 700;
+    for (const panel of panels) {
+      const r = panel.getBoundingClientRect();
+      const travel = Math.max(-1, Math.min(1, vertical
+        ? (r.top + r.height / 2 - innerHeight / 2) / innerHeight
+        : (r.left + r.width / 2 - innerWidth / 2) / innerWidth));
+      panel.style.setProperty('--scene-x', `${travel * 42}px`);
+      panel.style.setProperty('--scene-y', `${travel * 28}px`);
+      panel.style.setProperty('--scene-turn', `${travel * 16}deg`);
+    }
+  }
+  function scheduleScene() {
+    if (scheduled === null && !motion.matches && !userPaused && !document.hidden) scheduled = requestAnimationFrame(updateScene);
+  }
+  function resetScene() {
+    if (scheduled !== null) cancelAnimationFrame(scheduled);
+    scheduled = null;
+    panels.forEach(panel => ['--scene-x','--scene-y','--scene-turn','--tilt-x','--tilt-y'].forEach(name => panel.style.removeProperty(name)));
+    if (!motion.matches && !userPaused) scheduleScene();
+  }
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => entry.target.classList.toggle('is-inview', entry.isIntersecting));
+    scheduleScene();
   }, { threshold: .18 });
-  document.querySelectorAll('.project-panel').forEach(panel => {
+  panels.forEach(panel => {
     observer.observe(panel);
     panel.addEventListener('pointermove', event => {
-      if (!finePointer.matches || motion.matches) return;
+      if (!finePointer.matches || motion.matches || userPaused) return;
       const rect = panel.getBoundingClientRect();
       panel.style.setProperty('--tilt-x', `${((event.clientX - rect.left) / rect.width - .5) * 15}deg`);
       panel.style.setProperty('--tilt-y', `${-((event.clientY - rect.top) / rect.height - .5) * 15}deg`);
     });
     panel.addEventListener('pointerleave', () => { panel.style.setProperty('--tilt-x', '0deg'); panel.style.setProperty('--tilt-y', '0deg'); });
   });
+  document.querySelector('#work-track').addEventListener('scroll', scheduleScene, { passive: true });
+  window.addEventListener('scroll', scheduleScene, { passive: true });
+  window.addEventListener('resize', scheduleScene, { passive: true });
+  motion.addEventListener('change', resetScene);
+  document.addEventListener('portfolio-motion', event => { userPaused = event.detail.paused; resetScene(); });
   const cursor = document.createElement('div'); cursor.className = 'experience-cursor'; cursor.setAttribute('aria-hidden', 'true'); document.body.append(cursor);
   document.addEventListener('pointermove', event => {
     const target = event.target.closest('.project-hit');
-    const visible = target && finePointer.matches && !motion.matches && !document.querySelector('dialog[open]');
+    const visible = target && finePointer.matches && !motion.matches && !userPaused && !document.querySelector('dialog[open]');
     cursor.classList.toggle('cursor-visible', !!visible);
     if (!visible) return;
     cursor.textContent = 'EXPLORE';

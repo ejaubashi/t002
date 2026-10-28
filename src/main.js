@@ -5,6 +5,7 @@ import '@fontsource/dm-sans/latin-600.css';
 import './style.css';
 import { artwork } from './artwork.js';
 import { mountDemo, observePreviews } from './demos.js';
+import { mountProjectReveals } from './project-reveals.js';
 import { initExperience, projectEntrance, cancelEntrance } from './experience.js';
 import { profile, projects } from './data.js';
 import { createPlayground } from './playground.js';
@@ -144,7 +145,9 @@ function renderProject(index) {
   const project = projects[index];
   const next = projects[(index + 1) % projects.length];
   content.innerHTML = `<div class="detail-header"><p class="detail-label">0${index + 1} / ${project.year} / Self-initiated concept</p><h2 class="detail-title" id="detail-title">${project.name}</h2><p class="detail-description">${project.description}</p></div><div id="interactive-demo"></div><div class="detail-meta"><div><strong>Services</strong>${project.services}</div><div><strong>Year</strong>${project.year}</div><div><strong>Status</strong>Self-initiated concept</div></div><div class="detail-body"><h3>The approach</h3><div><p>${project.approach}</p><p>${project.outcome}</p></div></div><div class="detail-bottom"><span>Next project / 0${(index + 1) % projects.length + 1}</span><button class="detail-next">${next.name} ${arrow}</button></div>`;
-  disposeDemo = mountDemo(content.querySelector('#interactive-demo'), index);
+  const stopDemo = mountDemo(content.querySelector('#interactive-demo'), index);
+  const stopReveals = mountProjectReveals(content);
+  disposeDemo = () => { stopDemo(); stopReveals(); };
   content.querySelector('.detail-next').addEventListener('click', () => navigateToProject((activeProject + 1) % projects.length));
   document.title = `${project.name} — ${profile.name}`;
   if (!dialog.open) {
