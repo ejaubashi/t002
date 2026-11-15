@@ -147,10 +147,19 @@ function navigateToProject(index) {
   location.hash = `project/${projects[index].id}`;
 }
 let disposeDemo = () => {};
+function disposeActiveProject() {
+  const stop = disposeDemo; disposeDemo = () => {};
+  stop(); cancelEntrance();
+}
+function closeProject() {
+  if (!dialog.open) return;
+  disposeActiveProject(); dialog.close();
+}
+dialog.addEventListener('cancel', event => { event.preventDefault(); closeProject(); });
 function renderProject(index) {
   const wasOpen = dialog.open;
   const preview = document.querySelectorAll('.project-preview')[index];
-  disposeDemo();
+  disposeActiveProject();
   activeProject = index;
   const project = projects[index];
   const next = projects[(index + 1) % projects.length];
@@ -175,17 +184,16 @@ function renderProject(index) {
   document.querySelector('.close-dialog').focus({ preventScroll: true });
   projectEntrance(dialog, preview, content.querySelector('#interactive-demo'));
 }
-document.querySelector('.close-dialog').addEventListener('click', () => dialog.close());
+document.querySelector('.close-dialog').addEventListener('click', closeProject);
 dialog.addEventListener('click', event => {
   if (event.target !== dialog) return;
   const rect = dialog.getBoundingClientRect();
-  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeProject();
 });
 dialog.addEventListener('close', () => {
   // A delayed close event from the previous view must not dispose a reopened demo.
   if (dialog.open) return;
-  cancelEntrance();
-  disposeDemo();
+  disposeActiveProject();
   document.body.classList.remove('is-dialog-open'); document.body.style.overflow = '';
   if (location.hash === `#project/${projects[activeProject].id}`) history.replaceState(null, '', projectReturnHash);
   document.title = isAbout ? `About — ${profile.name}` : `${profile.name} — Creative Development`;
@@ -198,7 +206,7 @@ function renderRoute() {
     if (index !== -1) { showTrack(false); renderProject(index); return; }
     history.replaceState(null, '', '#work');
   }
-  if (dialog.open) dialog.close();
+  if (dialog.open) closeProject();
   if (['about', 'bio', 'contact'].includes(hash)) {
     showTrack(true);
     if (hash !== 'about') scrollToPosition(panelPosition(document.getElementById(hash)));

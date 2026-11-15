@@ -106,3 +106,5 @@
 @media(max-width:700px){@keyframes form-quiet-open{from{clip-path:inset(34% 47% 22% 53% round 50% 50% 4px 4px)}to{clip-path:inset(34% 6% 22% 12% round 50% 50% 4px 4px)}}}
 @media(prefers-reduced-motion:reduce){.project-world .demo-1 .project-sculpture,.world-gallery[data-world="1"] .project-sculpture{animation:none!important}}
 .motion-paused .project-sculpture{animation:none!important}
+
+@media(max-width:700px){.world-gallery .world-landscape svg{left:calc(72vw - 116.1svh)}}
