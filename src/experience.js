@@ -3,16 +3,24 @@ import './experience.css';
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 let portal = null, portalAnimation = null, worldAnimations = [];
+motion.addEventListener('change',()=>{if(motion.matches)cancelEntrance();});
+document.addEventListener('portfolio-motion',event=>{if(event.detail.paused)cancelEntrance();});
 
 export function projectEntrance(dialog, source, destination) {
   cancelEntrance();
   if (motion.matches) return;
   if (dialog.classList.contains('project-world')) {
+    if (document.body.classList.contains('motion-paused')) return;
     const stage = destination.querySelector('.demo-stage');
+    const index = [...dialog.classList].find(c=>/^world-\d$/.test(c))?.slice(-1);
     const title = stage?.querySelector('.orbit-demo-title,.world-form-title,.landscape-word,.record-copy');
-    worldAnimations.push(dialog.animate([{opacity:0},{opacity:1}],{duration:500,easing:'ease-out'}));
-    if(stage)worldAnimations.push(stage.animate([{transform:'scale(1.045)',opacity:.55},{transform:'scale(1)',opacity:1}],{duration:1100,easing:'cubic-bezier(.16,1,.3,1)'}));
-    if(title)worldAnimations.push(title.animate([{transform:'translateY(35px)',opacity:0},{transform:'translateY(0)',opacity:1}],{duration:1000,easing:'cubic-bezier(.42,0,.58,1)'}));
+    const duration = index === '2' ? 1700 : index === '1' ? 1200 : 1130;
+    const delay = index === '2' ? 300 : index === '1' ? 400 : 220;
+    if (title) worldAnimations.push(title.animate(
+      index === '1' ? [{opacity:0},{opacity:1}] :
+      [{transform:`translateY(${index === '0' ? 120 : 85}px)`,opacity:0},{transform:'translateY(0)',opacity:1}],
+      {duration,delay,easing:'cubic-bezier(.42,0,.58,1)',fill:'backwards'}
+    ));
     return;
   }
   const rect = source?.getBoundingClientRect();

@@ -15,24 +15,33 @@ export function createSignalField(scene, resources) {
       varying vec2 vUv;
       uniform float uTime; uniform vec2 uPointer;
       uniform vec3 uModes; uniform float uAspect; uniform float uPulse;
-      float line(float x,float width){return 1.-smoothstep(0.,width,abs(sin(x)));}
+      float line(float phase){
+        float edge=max(fwidth(phase)*.8,.025);
+        return 1.-smoothstep(.23-edge,.23+edge,abs(sin(phase)));
+      }
       void main(){
-        vec2 p=(vUv-.5)*vec2(uAspect,1.);
-        vec2 mouse=(uPointer-.5)*vec2(uAspect,1.);
+        vec2 aspect=vec2(uAspect,1.);
+        vec2 uv=vec2(vUv.x,1.-vUv.y);
+        vec2 p=(uv-vec2(.65,.47))*aspect;
+        vec2 mouse=(vec2(uPointer.x,1.-uPointer.y)-vec2(.65,.47))*aspect;
         vec2 d=p-mouse;
-        float lens=exp(-dot(d,d)*38.);
-        p+=d*lens*.32;
-        float t=uTime*.55;
-        float wave=line(p.y*90.+sin(p.x*7.+t)*2.8,.17);
-        float orbit=line(length(p)*95.-t*1.4+sin(atan(p.y,p.x)*3.+t)*.8,.14);
-        float a=length(p-vec2(-.19,0.));
-        float b=length(p-vec2(.19,0.));
-        float interference=line(a*95.-t,.15)*.55+line(b*95.+t*.7,.15)*.55;
-        float ripple=line(length(d)*80.-(1.-uPulse)*24.,.24)*uPulse;
+        float lens=exp(-dot(d,d)*14.);
+        p+=d*lens*.24;
+        float t=uTime*.12;
+        float a=line(p.y*96.+sin(p.x*4.6+t)*3.);
+        float b=line(p.y*98.4+sin(p.x*4.6-t)*3.3+.4);
+        float wave=a*.45+b*.25+a*b*.55;
+        float d1=length(p+vec2(.16*sin(t),.11*cos(t*.7)));
+        float d2=length(p-vec2(.17*cos(t*.8),.13*sin(t)));
+        a=line(d1*126.-t);b=line(d2*131.4+t*.7);
+        float orbit=a*.45+b*.25+a*b*.55;
+        a=line((p.x*.84+p.y*.28)*93.+sin(p.y*5.-t)*2.4);
+        b=line((p.x*.81-p.y*.31)*96.+sin(p.y*4.+t)*2.4);
+        float interference=a*.45+b*.25+a*b*.55;
+        float ripple=line(length(d)*80.-(1.-uPulse)*24.)*uPulse;
         float ink=dot(vec3(wave,orbit,interference),uModes)+ripple*.65;
-        float fade=1.-smoothstep(.22,.85,length(p));
-        vec3 color=mix(vec3(.32,.58,.9),vec3(.79,.97,.65),.7);
-        gl_FragColor=vec4(color,(ink*.28+lens*.02)*fade);
+        float fade=1.-smoothstep(.18,.7,length(p));
+        gl_FragColor=vec4(.79,.97,.65,clamp((ink*.58+lens*.015)*fade,0.,.85));
       }`,
   });
   const field = new THREE.Mesh(fieldGeometry, fieldMaterial);

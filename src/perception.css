@@ -1,0 +1,108 @@
+/* PERCEPTION: original Figma art direction; deliberately scoped away from the orange home. */
+.world-artline,.orbit-artline{position:absolute;z-index:3;left:4.45%;top:20%;margin:0;font:italic 400 clamp(36px,5vw,86px)/.92 'Cormorant Garamond',Georgia,serif;letter-spacing:-.025em;color:#caf6a6;pointer-events:none;opacity:calc(1 - var(--journey,0) * 1.7)}
+#work-track .world-gallery[data-world="0"] .project-heading{top:55%;font-size:21.7vw;line-height:1.02;letter-spacing:-.035em}
+.world-gallery[data-world="0"] .project-caption{top:46%;max-width:180px;font-size:9px}
+.world-gallery[data-world="0"] .world-hint{top:auto;bottom:14%}
+.project-world .orbit-demo-title{top:auto;bottom:20%;font-size:21vw;line-height:1.02;letter-spacing:-.035em}
+.project-world .orbit-demo-title span{font-size:9px;margin-top:8px;letter-spacing:.12em}
+.project-world .demo-0 .demo-stage[data-mode=wave] .orbit-demo-title{letter-spacing:-.035em}
+.world-gallery[data-world="1"]{--world-bg:#f4f0df}
+.world-gallery[data-world="1"] .project-preview{background:#f4f0df!important}
+.form-aperture{position:absolute;z-index:0;left:52%;right:8%;top:15%;bottom:18%;border-radius:50% 50% 4px 4px;background:radial-gradient(ellipse at 50% 30%,#fffaf0,#d4c7ad);transform-origin:center;pointer-events:none}
+.world-gallery[data-world="1"] .project-preview:before{content:'';position:absolute;left:52%;right:8%;top:15%;bottom:18%;border-radius:50% 50% 4px 4px;background:radial-gradient(ellipse at 50% 30%,#fffaf0,#d4c7ad)}
+.world-gallery[data-world="1"] .project-sculpture,.world-gallery[data-world="1"] .world-ceramic-fallback,.project-world .demo-1 .project-sculpture,.project-world .demo-1 .demo-ceramics{clip-path:inset(15% 8% 18% 52% round 50% 50% 4px 4px)}
+#work-track .world-gallery[data-world="1"] .project-heading{top:28%;font-size:9.45vw;line-height:.92;letter-spacing:-.025em}
+#work-track .world-gallery[data-world="1"] .project-heading span:last-child{font-style:italic}
+.world-gallery[data-world="1"] .project-caption{top:63%;font-size:14px;letter-spacing:0;max-width:230px}
+.project-world .world-form-title{top:28%;font-size:9.45vw;line-height:.92;letter-spacing:-.025em}
+.project-world .world-form-title em{font-style:italic}
+.project-world .demo-1 .demo-ceramics{background:transparent!important}
+.project-world .demo-1 .demo-controls{left:4.45%;right:4.45%;border-radius:4px;background:#f4f0dfc4}
+.project-world .demo-1 .stage-gesture-hint{top:66%;font-size:9px;max-width:170px;line-height:1.6}
+#work-track .world-gallery[data-world="2"] .project-heading{top:55%;font:400 9.6vw/.92 'Cormorant Garamond',Georgia,serif;letter-spacing:-.025em}
+#work-track .world-gallery[data-world="2"] .project-heading span:last-child{font-style:italic}
+.project-world .landscape-word{inset:auto auto auto 4.45%;top:53%;font:400 9.6vw/.92 'Cormorant Garamond',Georgia,serif;letter-spacing:-.025em;text-align:left}
+.project-world .landscape-word em{font-weight:400}
+.project-world .landscape-note{top:18%;font-size:22px;line-height:1.2}
+.project-world .landscape-sun{box-shadow:none}
+.project-world .landscape-ridge:after{content:'';position:absolute;inset:0;background:repeating-radial-gradient(ellipse at 30% 140%,transparent 0 27px,#f4f0df16 28px 29px,transparent 30px 40px);opacity:.5}
+#work-track .world-gallery[data-world="3"] .project-heading{top:16%;font-size:18.75vw;line-height:1.02;letter-spacing:-.025em;max-width:70%}
+#work-track .world-gallery[data-world="3"] .project-heading span:first-child{max-width:none;white-space:nowrap}
+#work-track .world-gallery[data-world="3"] .project-heading span:last-child{margin-left:14.4vw}
+.world-gallery[data-world="3"] .project-caption{top:auto;bottom:18%;font-size:10px;max-width:230px}
+.world-gallery[data-world="3"] .world-hint{top:auto;bottom:13%}
+.world-gallery .world-vinyl{left:auto;right:-2%;top:34%;width:35.4vw;height:35.4vw;max-width:750px;max-height:750px;z-index:1;box-shadow:none}
+.world-gallery .world-cover-lines{inset:21% 9% auto auto;width:24vw;height:24vw;background:#57213e;transform:rotate(-7deg);z-index:0}
+.world-gallery .world-vinyl-label{font-size:3vw}
+.project-world .record-copy{top:16%;font-size:18.75vw;line-height:1.02;letter-spacing:-.025em;max-width:68%}
+.project-world .record-copy em{display:inline-block;font-size:1em;margin-left:14.4vw}
+.noise-print-sleeve{position:absolute;right:9%;top:21%;width:24vw;height:24vw;background:currentColor;transform:rotate(-7deg);color:inherit;z-index:0}
+.project-world .record-turntable{width:35.4vw;height:35.4vw;right:-2%;top:34%;max-width:750px;max-height:750px;z-index:3}
+.project-world .record-vinyl{box-shadow:none}
+.project-world .record-vinyl>span{font-size:3vw}
+.project-world .record-bars{display:none}
+.project-world .record-artwork{opacity:.08}
+.project-world .demo-stage[data-track="1"] .record-copy{font-family:'Cormorant Garamond',Georgia,serif;font-size:12vw;font-style:italic;line-height:.9;letter-spacing:-.025em;top:23%}
+.project-world .demo-stage[data-track="1"] .record-copy em{font:10px 'DM Sans',sans-serif;margin:24px 0 0;letter-spacing:.13em}
+.project-world .demo-stage[data-track="2"] .record-copy{font-size:11vw;line-height:.96;top:23%}
+.project-world .demo-stage[data-track="2"] .record-copy em{font:10px 'DM Sans',sans-serif;margin:24px 0 0;letter-spacing:.13em}
+.project-world .demo-stage[data-track="1"] .record-turntable,.project-world .demo-stage[data-track="2"] .record-turntable{right:-2%}
+.project-world .demo-controls{border-width:1px 0 0;background:color-mix(in srgb,var(--world-bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding-left:0;padding-right:0}
+.project-world .demo-controls button{border-radius:0;min-height:44px;background:transparent}
+.project-world .record-caption,.project-world .stage-gesture-hint{font-size:9px}
+.art-entry{position:absolute;inset:0;z-index:14;overflow:hidden;pointer-events:none;display:none;contain:paint}
+.art-entering>.art-entry{display:block}
+.art-entry>i{position:absolute;display:block;font-style:normal}
+.art-entry-0>i{inset:0 auto 0 calc(var(--piece) * 100% / var(--pieces));width:calc(100% / var(--pieces) + 1px);background:#101759;border-right:1px solid #caf6a620}
+.art-entry-2>i{left:0;right:0;top:calc(var(--piece) * 100% / 3);height:calc(100% / 3 + 1px);background:#263e3a}
+.art-entry-2>i:first-child{background:#97a68a}
+.art-entry-3>i{left:0;right:0;top:calc(var(--piece) * 100% / 6);height:calc(100% / 6 + 1px);overflow:hidden;background:#57213e;color:#e9a6c2}
+.art-entry-3 span{display:block;padding-left:4.45%;font:400 clamp(70px,9.17vw,150px)/1.02 Anton,sans-serif;white-space:nowrap}
+@media(max-width:700px){
+ .world-artline,.orbit-artline{left:6%;top:14%;font-size:15vw;line-height:.92}
+ #work-track .world-gallery[data-world="0"] .project-heading{left:5%;top:auto;bottom:18%;font-size:32.3vw}
+ .world-gallery[data-world="0"] .project-caption{display:none}.world-gallery[data-world="0"] .world-hint{bottom:14%}
+ .project-world .orbit-demo-title{left:5%;top:auto;bottom:24%;font-size:32.3vw}.project-world .orbit-demo-title span{font-size:7px;max-width:80vw;letter-spacing:.1em}
+ .form-aperture,.world-gallery[data-world="1"] .project-preview:before{left:12%;right:6%;top:34%;bottom:22%}
+ .world-gallery[data-world="1"] .project-sculpture,.world-gallery[data-world="1"] .world-ceramic-fallback,.project-world .demo-1 .project-sculpture,.project-world .demo-1 .demo-ceramics{clip-path:inset(34% 6% 22% 12% round 50% 50% 4px 4px)}
+ #work-track .world-gallery[data-world="1"] .project-heading{top:13%;left:6%;font-size:20vw;line-height:.92}
+ .project-world .world-form-title{top:14%;left:6%;font-size:20vw}
+ .world-gallery[data-world="1"] .project-caption{top:auto;bottom:17%;font-size:10px;max-width:190px}
+ .world-gallery[data-world="1"] .world-hint{display:none}
+ .project-world .demo-1 .stage-gesture-hint{top:auto;bottom:23%;font-size:7px;max-width:150px}
+ #work-track .world-gallery[data-world="2"] .project-heading{top:55%;left:6%;font-size:20.5vw;line-height:.92;max-width:90%}
+ .world-gallery[data-world="2"] .project-caption{font-size:20px;max-width:160px}
+ .project-world .landscape-word{left:6%;top:52%;font-size:20.5vw;line-height:.92}
+ .project-world .landscape-note{left:6%;top:16%;font-size:20px;max-width:160px}
+ #work-track .world-gallery[data-world="3"] .project-heading{top:16%;left:5%;font-size:36vw;line-height:1.04;max-width:90%}
+ #work-track .world-gallery[data-world="3"] .project-heading span:last-child{margin-left:0}
+ .world-gallery .world-vinyl{top:51%;right:-6%;width:79.5vw;height:79.5vw}
+ .world-gallery .world-cover-lines{top:51%;right:10%;width:54vw;height:54vw}
+ .world-gallery .world-vinyl-label{font-size:8vw}
+ .world-gallery[data-world="3"] .project-caption{bottom:14%;max-width:130px;font-size:8px}.world-gallery[data-world="3"] .world-hint{display:none}
+ .project-world .record-copy{left:5%;top:14%;font-size:35vw;max-width:90%;line-height:1.02}
+ .project-world .record-copy em{margin-left:0}
+ .noise-print-sleeve{top:51%;right:10%;width:54vw;height:54vw}
+ .project-world .record-turntable{top:48%;right:-6%;width:79.5vw;height:79.5vw}
+ .project-world .record-vinyl>span{font-size:8vw}
+ .project-world .demo-stage[data-track="1"] .record-copy{top:20%;font-size:25vw}.project-world .demo-stage[data-track="2"] .record-copy{top:21%;font-size:22vw}
+ .project-world .demo-stage[data-track="1"] .record-copy em,.project-world .demo-stage[data-track="2"] .record-copy em{font-size:8px}
+ .project-world .demo-stage[data-track="1"] .record-turntable,.project-world .demo-stage[data-track="2"] .record-turntable{right:-6%}
+ .project-world .record-caption{left:6%;bottom:180px;font-size:7px;max-width:140px}.project-world .demo-3 .stage-gesture-hint{bottom:180px;max-width:105px}
+ .project-world .demo-controls{padding:10px;left:4%;right:4%;column-gap:8px}
+ .project-world .demo-1 .demo-controls{left:4%;right:4%;column-gap:8px}
+ .art-entry-3 span{font-size:22vw;line-height:1.05}
+}
+@media(prefers-reduced-motion:reduce){
+ .art-entry{display:none!important}
+ .world-artline,.orbit-artline{opacity:1}
+ .project-world .orbit-demo-title,.project-world .world-form-title,.project-world .landscape-word,.project-world .record-copy{transform:none!important;opacity:1!important}
+ .form-aperture{transform:none!important}
+}
+.motion-paused .art-entry{display:none!important}
+
+@keyframes form-quiet-open{from{clip-path:inset(15% 28% 18% 72% round 50% 50% 4px 4px)}to{clip-path:inset(15% 8% 18% 52% round 50% 50% 4px 4px)}}
+.project-world .demo-1 .project-sculpture,.world-gallery.is-inview[data-world="1"] .project-sculpture{animation:form-quiet-open 1500ms 300ms cubic-bezier(.42,0,.58,1) backwards}
+@media(max-width:700px){@keyframes form-quiet-open{from{clip-path:inset(34% 47% 22% 53% round 50% 50% 4px 4px)}to{clip-path:inset(34% 6% 22% 12% round 50% 50% 4px 4px)}}}
+@media(prefers-reduced-motion:reduce){.project-world .demo-1 .project-sculpture,.world-gallery[data-world="1"] .project-sculpture{animation:none!important}}
+.motion-paused .project-sculpture{animation:none!important}

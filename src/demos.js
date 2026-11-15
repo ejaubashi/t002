@@ -56,7 +56,7 @@ export function mountDemo(root, index) {
   cleanups.push(() => observer.disconnect());
 
   if (index === 0) {
-    stage.innerHTML = '<canvas aria-hidden="true"></canvas><div class="orbit-demo-title">SOUND<br>IN MOTION.<span>SOUND, REIMAGINED.</span></div>';
+    stage.innerHTML = '<canvas aria-hidden="true"></canvas><p class="orbit-artline">Sound<br>takes shape.</p><div class="orbit-demo-title">ORBIT<span>SOUND, REIMAGINED.</span></div>';
     controls.innerHTML = '<div class="orbit-modes" role="group" aria-label="Signal mode"><button data-mode="wave" aria-pressed="false">Wave</button><button data-mode="orbit" aria-pressed="true">Orbit</button><button data-mode="interference" aria-pressed="false">Interference</button></div><label>Tempo <input aria-label="Orbit tempo" type="range" min="0.3" max="2" step="0.1" value="1"></label><button class="burst">Remix shape</button><button class="signal-pulse">Pulse signal</button><button class="motion-toggle"></button>';
     let x = 0, y = 0, remix = 0;
     const tempo = controls.querySelector('input');
@@ -99,7 +99,7 @@ export function mountDemo(root, index) {
   }
 
   if (index === 1) {
-    stage.innerHTML = `<div class="demo-ceramics art-form">${artwork[1][1]}<span class="ceramic-edition">THE EVERYDAY COLLECTION / 001</span></div>`;
+    stage.innerHTML = `<div class="form-aperture" aria-hidden="true"></div><div class="demo-ceramics art-form">${artwork[1][1]}<span class="ceramic-edition">THE EVERYDAY COLLECTION / 001</span></div>`;
     controls.innerHTML = '<div class="finish-picker" role="group" aria-label="Ceramic finish"><span>Finish</span><button data-color="sand" aria-label="Sand finish" aria-pressed="true"></button><button data-color="sage" aria-label="Sage finish" aria-pressed="false"></button><button data-color="clay" aria-label="Clay finish" aria-pressed="false"></button><button data-color="ink" aria-label="Ink finish" aria-pressed="false"></button></div><label>Turn <input aria-label="Turn ceramics" type="range" min="-30" max="30" value="0"></label><output aria-live="polite">Sand / 01</output><button class="inspect-form" aria-pressed="false">Inspect form</button>';
     for (const button of controls.querySelectorAll('[data-color]')) listen(button, 'click', () => {
       stage.dataset.finish = button.dataset.color;
@@ -125,7 +125,7 @@ export function mountDemo(root, index) {
       event.currentTarget.textContent = selected ? 'View collection' : 'Inspect form';
       stage.classList.toggle('is-inspecting', selected); sculpture?.setInspection(selected);
     });
-    stage.insertAdjacentHTML('beforeend', '<div class="world-form-title" aria-hidden="true">Objects<br><em>with soul.</em></div>');
+    stage.insertAdjacentHTML('beforeend', '<div class="world-form-title" aria-hidden="true">Quiet<br><em>by nature.</em></div>');
     stage.dataset.finish = 'sand';
     const onPreference = () => { paused = reduced.matches; syncMotion(); };
     reduced.addEventListener('change', onPreference);
@@ -133,7 +133,7 @@ export function mountDemo(root, index) {
   }
 
   if (index === 2) {
-    stage.innerHTML = '<div class="demo-landscape"><span class="landscape-note">LESS SIGNAL. MORE FEELING.</span><div class="landscape-stars"></div><div class="landscape-clouds" aria-hidden="true"><i></i><i></i><i></i></div><div class="landscape-moon" aria-hidden="true"></div><div class="landscape-sun"></div><div class="landscape-ridge ridge-far"></div><div class="landscape-ridge ridge-near"></div><div class="landscape-ridge ridge-front"></div><div class="landscape-word">offgrid.</div><span class="landscape-coordinate">46°35′ N / 12°18′ E</span><span class="landscape-hour">12:00 / DAYLIGHT</span></div>';
+    stage.innerHTML = '<div class="demo-landscape"><span class="landscape-note">LESS SIGNAL. MORE FEELING.</span><div class="landscape-stars"></div><div class="landscape-clouds" aria-hidden="true"><i></i><i></i><i></i></div><div class="landscape-moon" aria-hidden="true"></div><div class="landscape-sun"></div><div class="landscape-ridge ridge-far"></div><div class="landscape-ridge ridge-near"></div><div class="landscape-ridge ridge-front"></div><div class="landscape-word">somewhere,<br><em>slower.</em></div><span class="landscape-coordinate">46°35′ N / 12°18′ E</span><span class="landscape-hour">12:00 / DAYLIGHT</span></div>';
     controls.innerHTML = '<label class="time-picker">Time of day <input aria-label="Landscape time of day" type="range" min="0" max="100" value="35"></label><div class="time-presets" role="group" aria-label="Time presets"><button data-time="10">Dawn</button><button data-time="35">Day</button><button data-time="65">Dusk</button><button data-time="100">Night</button></div><button class="motion-toggle"></button>';
     const range = controls.querySelector('input');
     const atmospheres = [
@@ -193,7 +193,7 @@ export function mountDemo(root, index) {
   }
 
   if (index === 3) {
-    stage.innerHTML = '<div class="demo-record"><div class="record-artwork">'+records.map((_, i) => `<div class="record-layer${i === 0 ? ' is-selected' : ''}" data-cover="${i}">${recordArtwork(i)}</div>`).join('')+'</div><span class="record-kicker">GOOD NOISE / INDEPENDENT CULTURE</span><div class="record-copy">FEEL<br>THE<br><em>FREQUENCY.</em></div><div class="record-turntable"><div class="record-vinyl"><span>GN<span>01</span></span></div><div class="record-needle"></div></div><div class="record-bars" aria-hidden="true">'+Array.from({ length: 28 }, (_, i) => `<i style="--i:${i}"></i>`).join('')+'</div><span class="record-caption" role="status">01 — AFTER HOURS</span></div>';
+    stage.innerHTML = '<div class="demo-record"><div class="record-artwork">'+records.map((_, i) => `<div class="record-layer${i === 0 ? ' is-selected' : ''}" data-cover="${i}">${recordArtwork(i)}</div>`).join('')+'</div><span class="record-kicker">GOOD NOISE / INDEPENDENT CULTURE</span><div class="record-copy">GOOD<br><em>NOISE</em></div><div class="noise-print-sleeve" aria-hidden="true"></div><div class="record-turntable"><div class="record-vinyl"><span>GN<span>01</span></span></div><div class="record-needle"></div></div><div class="record-bars" aria-hidden="true">'+Array.from({ length: 28 }, (_, i) => `<i style="--i:${i}"></i>`).join('')+'</div><span class="record-caption" role="status">01 — AFTER HOURS</span></div>';
     controls.innerHTML = '<button class="motion-toggle"></button><div class="record-tracks" role="group" aria-label="Visual record selection"><button data-track="0" aria-pressed="true">01</button><button data-track="1" aria-pressed="false">02</button><button data-track="2" aria-pressed="false">03</button></div><button class="flip-sleeve" aria-pressed="false">Flip sleeve</button><button class="sound-toggle" aria-pressed="false">Enable sound</button><span class="visual-only" role="status">SOUND OFF</span>';
     const front = stage.querySelector('.demo-record');
     const sleeve = document.createElement('div'); sleeve.className = 'record-sleeve';

@@ -1,3 +1,5 @@
+import { mountArtTransition } from './art-transitions.js';
+
 /** Each full-screen gallery scene owns its GPU only while it is actually visible. */
 export function mountWorldGallery() {
   const panels=[...document.querySelectorAll('.world-gallery')];
@@ -26,6 +28,7 @@ export function mountWorldGallery() {
   const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting&&entry.intersectionRatio>=.25)visible.add(entry.target);else visible.delete(entry.target);}sync();},{threshold:[0,.25]});
   panels.forEach(panel=>{
     observer.observe(panel);
+    mountArtTransition(panel,Number(panel.dataset.world),{gallery:true});
     panel.addEventListener('pointermove',event=>{
       if(motion.matches||event.pointerType==='touch')return;
       const r=panel.getBoundingClientRect();scenes.get(panel)?.setPointer((event.clientX-r.left)/r.width-.5,(event.clientY-r.top)/r.height-.5);

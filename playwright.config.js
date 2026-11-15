@@ -13,7 +13,7 @@ export default defineConfig({
     launchOptions: {
       executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ||
         (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined),
-      args: ['--no-sandbox'],
+      args: ['--no-sandbox', ...(process.env.CI ? ['--enable-unsafe-swiftshader'] : [])],
     },
     trace: 'retain-on-failure',
   },

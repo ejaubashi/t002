@@ -1,0 +1,44 @@
+name: Verify project experiences
+on:
+  push:
+    branches: ['perception/**']
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm test
+      - name: Prepare unchanged homepage baseline
+        if: always()
+        run: |
+          mkdir -p /tmp/perception-baseline
+          git archive a6c08c55de411da76110ea431b4215fec6aa5457 | tar -x -C /tmp/perception-baseline
+          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/perception-baseline/node_modules
+      - name: Visual review and homepage pixel comparison
+        if: always()
+        run: node tests/perception-review.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: perception-browser-review
+          path: |
+            review/
+            test-results/
+          retention-days: 7

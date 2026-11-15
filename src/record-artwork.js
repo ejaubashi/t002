@@ -1,6 +1,6 @@
 // Figma studies translated to editable inline vectors and one record data model.
 export const records = [
-  { name: 'AFTER HOURS', copy: 'FEEL<br>THE<br><em>FREQUENCY.</em>', speed: 48, rhythm: 1.6, movement: 'ribbon' },
+  { name: 'AFTER HOURS', copy: 'GOOD<br><em>NOISE</em>', speed: 48, rhythm: 1.6, movement: 'ribbon' },
   { name: 'SOFT SIGNAL', copy: 'soft<br>signal.<br><em>STAY AWHILE.</em>', speed: 24, rhythm: .65, movement: 'rosette' },
   { name: 'ELECTRIC FEEL', copy: 'ELECTRIC<br>FEEL.<br><em>PLAY IT AGAIN.</em>', speed: 66, rhythm: 2.3, movement: 'signal' },
 ];
