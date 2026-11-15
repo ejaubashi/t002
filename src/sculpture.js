@@ -19,7 +19,7 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
   const camera = new THREE.PerspectiveCamera(35, 1, .1, 30);
   camera.position.set(0, .25, world && mobile ? 12 : 7.5);
   const group = new THREE.Group(); scene.add(group);
-  if (world) { group.position.x = mobile ? .15 : 1.2; if (index === 0 && mobile) group.position.y = -.65; }
+  if (world) { group.position.x = mobile ? .15 : index === 1 ? 1.7 : 1.2; if (index === 0 && mobile) group.position.y = -.65; }
   const geometries = [], materials = [], textures = [], rings = [];
   const abort = new AbortController();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -83,7 +83,7 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
       vase.position.set(i === 0 ? -.65 : .8, -.95, i === 0 ? .12 : -.18);
       vase.castShadow = true; vase.receiveShadow = true; group.add(vase);
     }
-    camera.position.set(0, world && mobile ? 3.5 : 2.0, world && mobile ? 13.5 : mobile ? 7.6 : 7.1); camera.lookAt(0, world && mobile ? 1.25 : .12, 0);
+    camera.position.set(0, world && mobile ? 3.5 : 2.0, world ? (mobile ? 13.5 : 8.4) : mobile ? 7.6 : 7.1); camera.lookAt(0, world && mobile ? 1.25 : .12, 0);
   }
 
   function syncClock() { clock.setRunning(!paused && (index === 0 || finishChanging || inspectionChanging)); }
@@ -119,7 +119,7 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
         inspection = THREE.MathUtils.lerp(inspection, inspectionTarget, blend);
         if (Math.abs(inspection - inspectionTarget) < .001) { inspection = inspectionTarget; inspectionChanging = false; syncClock(); }
       }
-      camera.position.z = (world && mobile ? 13.5 : mobile ? 7.6 : 7.1) - inspection * 1.5 - journey * .6;
+      camera.position.z = (world ? (mobile ? 13.5 : 8.4) : mobile ? 7.6 : 7.1) - inspection * 1.5 - journey * .6;
       camera.lookAt(-inspection * .15, (world && mobile ? 1.25 : .12) + inspection * .12, 0);
       group.rotation.y = turn * Math.PI / 180 + pointerX * .12 + journey * .5;
     }

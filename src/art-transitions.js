@@ -14,12 +14,12 @@ export function mountArtTransition(root,index,{gallery=false}={}) {
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const container=root.querySelector('.art-entry');
   const aperture=index===1?root.querySelector('.form-aperture'):null;
-  let animations=[],observer=null,disposed=false,visible=false,played=false;
+  let animations=[],observer=null,disposed=false,visible=false,played=false,run=0;
   const blocked=()=>reduced.matches||document.body.classList.contains('motion-paused')||document.hidden;
-  function cancel(){animations.forEach(a=>a.cancel());animations=[];root.classList.remove('art-entering');}
+  function cancel(){run++;animations.forEach(a=>a.cancel());animations=[];root.classList.remove('art-entering');}
   function play(){
     cancel();if(disposed||blocked())return;
-    played=true;root.classList.add('art-entering');
+    played=true;const token=run;root.classList.add('art-entering');
     if(container){
       container.querySelectorAll(':scope>i').forEach((piece,i)=>{
         const sign=i%2===0?1:-1;
@@ -33,7 +33,7 @@ export function mountArtTransition(root,index,{gallery=false}={}) {
       });
     }
     if(aperture)animations.push(aperture.animate([{transform:'scaleX(.015)'},{transform:'scaleX(1)'}],{duration:1500,delay:300,easing:'cubic-bezier(.42,0,.58,1)',fill:'backwards'}));
-    Promise.all(animations.map(a=>a.finished.catch(()=>{}))).then(()=>{if(!disposed)root.classList.remove('art-entering');});
+    Promise.all(animations.map(a=>a.finished.catch(()=>{}))).then(()=>{if(!disposed&&run===token)root.classList.remove('art-entering');});
   }
   function preference(){if(blocked())cancel();else if(!played&&(!gallery||visible))play();}
   if(gallery){
