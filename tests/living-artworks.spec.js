@@ -42,7 +42,7 @@ test('paper relief retains pigment, turning and inspection without WebGL',async(
  await page.addInitScript(()=>{const get=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return type.startsWith('webgl')?null:get.call(this,type,...args);};});
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/#project/form-and-field');
- const artwork=page.locator('.relief-fallback');
+ const artwork=page.locator('#interactive-demo .relief-fallback');
  await expect(artwork).toBeVisible();
  await expect(page.locator('.project-sculpture')).toHaveCount(0);
  const sand=await artwork.screenshot();
