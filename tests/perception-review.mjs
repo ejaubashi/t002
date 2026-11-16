@@ -27,7 +27,7 @@ try{
   const updated=await page.screenshot();
   assert(original.equals(updated),'Homepage pixels changed at '+width);
   report.homepage.push({width,pixelIdentical:true});await before.close();
-  const gallery=[],projectShots=[];
+  const gallery=[],projectShots=[],signals=[],finishes=[],scores=[];
   for(const [i,id] of projects.entries()){
    await page.goto('http://127.0.0.1:5173/');
    await page.locator('#'+id).evaluate(el=>el.scrollIntoView({behavior:'instant',inline:'start',block:'start'}));
@@ -41,10 +41,31 @@ try{
    assert(await page.locator('#interactive-demo').evaluate(el=>el.scrollWidth<=el.clientWidth),'Project overflow '+id);
    const p=await page.screenshot();projectShots.push(p);
    await writeFile('review/'+id+'-'+width+'.png',p);
+   if(i===0){
+    signals.push(p);
+    for(const mode of ['Wave','Interference']){
+     await page.getByRole('button',{name:mode,exact:true}).click();signals.push(await page.screenshot());
+    }
+    await page.getByRole('button',{name:'Remix shape',exact:true}).click();signals.push(await page.screenshot());
+   }
+   if(i===1){
+    finishes.push(p);
+    for(const name of ['Sage finish','Clay finish','Ink finish']){
+     await page.getByRole('button',{name,exact:true}).click();finishes.push(await page.screenshot());
+    }
+   }
+   if(i===3){
+    scores.push(p);
+    for(const n of [1,2]){
+     await page.locator('.record-tracks [data-track="'+n+'"]').click();scores.push(await page.screenshot());
+    }
+    await page.getByRole('button',{name:'Reverse artwork',exact:true}).click();scores.push(await page.screenshot());
+   }
    await page.keyboard.press('Escape');
    report.views.push({width,project:id,overflow:false,closed:true});
   }
   sheets['gallery-'+width]=gallery;sheets['projects-'+width]=projectShots;
+  sheets['signals-'+width]=signals;sheets['finishes-'+width]=finishes;sheets['scores-'+width]=scores;
   await context.close();
  }
  assert.deepEqual(report.errors,[]);
