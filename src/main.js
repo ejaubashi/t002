@@ -154,11 +154,10 @@ function disposeActiveProject() {
 }
 function closeProject() {
   if (!dialog.open) return;
-  disposeActiveProject(); dialog.close();
+  disposeActiveProject(); dialog.close(); finishProjectClose();
 }
 dialog.addEventListener('cancel', event => { event.preventDefault(); closeProject(); });
 function renderProject(index) {
-  const wasOpen = dialog.open;
   const preview = document.querySelectorAll('.project-preview')[index];
   disposeActiveProject();
   activeProject = index;
@@ -191,7 +190,7 @@ dialog.addEventListener('click', event => {
   const rect = dialog.getBoundingClientRect();
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeProject();
 });
-dialog.addEventListener('close', () => {
+function finishProjectClose() {
   // A delayed close event from the previous view must not dispose a reopened demo.
   if (dialog.open) return;
   disposeActiveProject();
@@ -199,7 +198,8 @@ dialog.addEventListener('close', () => {
   if (location.hash === `#project/${projects[activeProject].id}`) history.replaceState(null, '', projectReturnHash);
   document.title = isAbout ? `About — ${profile.name}` : `${profile.name} — Creative Development`;
   focusReturn?.focus({ preventScroll: true });
-});
+}
+dialog.addEventListener('close', finishProjectClose);
 function renderRoute() {
   const hash = location.hash.slice(1);
   if (hash.startsWith('project/')) {
