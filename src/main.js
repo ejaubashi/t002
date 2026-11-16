@@ -148,6 +148,7 @@ function navigateToProject(index) {
   location.hash = `project/${projects[index].id}`;
 }
 let disposeDemo = () => {};
+let projectCloseFinalized = true;
 function disposeActiveProject() {
   const stop = disposeDemo; disposeDemo = () => {};
   stop(); cancelEntrance();
@@ -160,7 +161,7 @@ dialog.addEventListener('cancel', event => { event.preventDefault(); closeProjec
 function renderProject(index) {
   const preview = document.querySelectorAll('.project-preview')[index];
   disposeActiveProject();
-  activeProject = index;
+  activeProject = index; projectCloseFinalized = false;
   const project = projects[index];
   const next = projects[(index + 1) % projects.length];
   const world = worlds[index];
@@ -191,8 +192,9 @@ dialog.addEventListener('click', event => {
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeProject();
 });
 function finishProjectClose() {
-  // A delayed close event from the previous view must not dispose a reopened demo.
-  if (dialog.open) return;
+  // The queued native event must not finalize twice or overwrite a new hash route.
+  if (dialog.open || projectCloseFinalized) return;
+  projectCloseFinalized = true;
   disposeActiveProject();
   document.body.classList.remove('is-dialog-open'); document.body.style.overflow = '';
   if (location.hash === `#project/${projects[activeProject].id}`) history.replaceState(null, '', projectReturnHash);
