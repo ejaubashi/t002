@@ -37,3 +37,20 @@ for(const width of [1440,390])test('original artworks replace objects and keep d
  await expect(page.getByRole('dialog')).toHaveCSS('background-color','rgb(16, 23, 89)');
  await page.getByRole('button',{name:'Close project'}).click();expect(errors).toEqual([]);
 });
+
+test('paper relief retains pigment, turning and inspection without WebGL',async({page})=>{
+ await page.addInitScript(()=>{const get=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return type.startsWith('webgl')?null:get.call(this,type,...args);};});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('/#project/form-and-field');
+ const artwork=page.locator('.relief-fallback');
+ await expect(artwork).toBeVisible();
+ await expect(page.locator('.project-sculpture')).toHaveCount(0);
+ const sand=await artwork.screenshot();
+ await page.getByRole('button',{name:'Sage finish'}).click();
+ const sage=await artwork.screenshot();expect(sage.equals(sand)).toBe(false);
+ await page.getByRole('slider',{name:'Turn artwork'}).focus();await page.keyboard.press('End');
+ const turned=await artwork.screenshot();expect(turned.equals(sage)).toBe(false);
+ await page.getByRole('button',{name:'Inspect form',exact:true}).click();
+ expect((await artwork.screenshot()).equals(turned)).toBe(false);
+ await page.getByRole('button',{name:'Close project'}).click();
+});

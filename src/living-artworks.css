@@ -64,3 +64,5 @@
 
 .project-world.world-3 .dialog-top,.project-world.world-3 .demo-controls{transition:background-color .55s,color .55s}
 @media(prefers-reduced-motion:reduce){.project-world.world-3 .dialog-top,.project-world.world-3 .demo-controls{transition:none}}
+
+.project-world .demo-1 .demo-stage.is-inspecting .relief-paper{transform:perspective(900px) rotateY(var(--turn,0deg)) scale(1.18) translateY(-8px)}
