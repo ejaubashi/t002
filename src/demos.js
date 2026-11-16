@@ -214,7 +214,7 @@ export function mountDemo(root, index) {
       const flipped = event.currentTarget.getAttribute('aria-pressed') !== 'true';
       event.currentTarget.setAttribute('aria-pressed', String(flipped));
       event.currentTarget.textContent = flipped ? 'Back to artwork' : 'Reverse artwork';
-      stage.classList.toggle('sleeve-flipped', flipped);
+      stage.classList.toggle('sleeve-flipped', flipped);applyScoreTheme();
       front.inert = flipped; front.setAttribute('aria-hidden', String(flipped));
       back.inert = !flipped; back.setAttribute('aria-hidden', String(!flipped));
       syncMotion();
@@ -242,9 +242,18 @@ export function mountDemo(root, index) {
       setRecordAngle(event.key === 'Home' ? 0 : event.key === 'End' ? 359 : recordAngle + (event.key === 'ArrowLeft' || event.key === 'ArrowDown' ? -15 : 15));
     });
     listen(document,'visibilitychange',()=>{sound?.setEnabled(soundEnabled&&!document.hidden).catch(()=>{});});
-    stage.dataset.track = '0';
+    const worldHost=root.closest('.project-world');
+    const scorePalettes=[['#e9a6c2','#57213e'],['#a9c4be','#263e3a'],['#bca8e5','#422359']];
+    function applyScoreTheme(){
+      if(!worldHost)return;
+      const [paper,ink]=scorePalettes[selectedTrack],reverse=stage.classList.contains('sleeve-flipped');
+      worldHost.style.setProperty('--world-bg',reverse?ink:paper);
+      worldHost.style.setProperty('--world-ink',reverse?paper:ink);
+    }
+    cleanups.push(()=>{worldHost?.style.removeProperty('--world-bg');worldHost?.style.removeProperty('--world-ink');});
+    stage.dataset.track = '0';applyScoreTheme();
     controls.querySelectorAll('[data-track]').forEach(button => listen(button, 'click', () => {
-      const n = Number(button.dataset.track); selectedTrack = n; sound?.setTrack(n); stage.dataset.track = String(n);
+      const n = Number(button.dataset.track); selectedTrack = n; sound?.setTrack(n); stage.dataset.track = String(n);applyScoreTheme();
       stage.querySelectorAll('.record-layer').forEach((layer, i) => layer.classList.toggle('is-selected', i === n));
       stage.querySelector('.record-copy').innerHTML = records[n].copy;
       back.querySelector('h3').textContent = records[n].name; back.querySelector('.sleeve-notes').textContent = notes[n];

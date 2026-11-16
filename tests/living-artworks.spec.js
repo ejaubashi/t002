@@ -28,5 +28,8 @@ for(const width of [1440,390])test('original artworks replace objects and keep d
  await expect(page.locator('.record-layer.is-selected .cover-rosette ellipse')).toHaveCount(20);
  await expect(page.getByRole('button',{name:'Enable sound'})).toHaveAttribute('aria-pressed','false');
  expect(await page.locator('#interactive-demo').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
+ await page.getByRole('button',{name:'Close project'}).click();
+ await page.goto('/#project/orbit');
+ await expect(page.getByRole('dialog')).toHaveCSS('background-color','rgb(16, 23, 89)');
  await page.getByRole('button',{name:'Close project'}).click();expect(errors).toEqual([]);
 });
