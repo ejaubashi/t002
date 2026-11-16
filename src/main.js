@@ -16,6 +16,7 @@ import '@fontsource/cormorant-garamond/latin-400.css';
 import '@fontsource/cormorant-garamond/latin-400-italic.css';
 import './worlds.css';
 import './perception.css';
+import './living-artworks.css';
 import { artTransitionMarkup, mountArtTransition } from './art-transitions.js';
 
 const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 20 4M4 4h16v16"/></svg>';

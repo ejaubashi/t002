@@ -46,7 +46,7 @@ test('3D is limited to projects and ceramic finish changes the rendered material
   await page.getByRole('button', { name: 'Clay finish' }).click();
   const clay = await canvas.screenshot();
   expect(clay.equals(sand)).toBe(false);
-  await page.getByRole('slider', { name: 'Turn ceramics' }).focus();
+  await page.getByRole('slider', { name: 'Turn artwork' }).focus();
   await page.keyboard.press('End');
   expect((await canvas.screenshot()).equals(clay)).toBe(false);
   await page.getByRole('button', { name: 'Close project' }).click();

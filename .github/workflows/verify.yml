@@ -29,7 +29,7 @@ jobs:
         if: always()
         run: |
           mkdir -p /tmp/perception-baseline
-          git archive a6c08c55de411da76110ea431b4215fec6aa5457 | tar -x -C /tmp/perception-baseline
+          git archive 2881a04cecefae1dd27772ad492e5736689b9a33 | tar -x -C /tmp/perception-baseline
           ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/perception-baseline/node_modules
       - name: Visual review and homepage pixel comparison
         if: always()

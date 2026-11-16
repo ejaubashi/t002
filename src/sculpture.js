@@ -27,8 +27,8 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
   let time = 0, tempo = 1, phase = 0, turn = 0, pointerX = 0, pointerY = 0;
   let signalUniforms, ceramic, finishChanging = false;
   const weights = new THREE.Vector3(0, 1, 0), targetWeights = weights.clone();
-  const targetColor = new THREE.Color(0xba9670);
-  let roughnessTarget = .72, coatTarget = .12;
+  const targetColor = new THREE.Color(0xe0d3b8);
+  let roughnessTarget = .88, coatTarget = .025;
   let pulse = 0, inspection = 0, inspectionTarget = 0, inspectionChanging = false, journey = 0;
   const makeMaterial = options => { const m = new THREE.MeshStandardMaterial(options); materials.push(m); return m; };
   function mesh(geometry, material, parent = group) {
@@ -41,12 +41,7 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
   rim.position.set(4, 2, -2); scene.add(rim);
 
   if (index === 0) {
-    const lime = makeMaterial({ color: 0xcaf6a6, metalness: .08, roughness: .58 });
-    for (let i = 0; i < 3; i++) {
-      const ring = mesh(new THREE.TorusGeometry(1.18 + i * .16, .035, mobile ? 10 : 16, mobile ? 80 : 120), lime);
-      rings.push(ring);
-    }
-    signalUniforms = createSignalField(scene, { geometries, materials });
+    signalUniforms = createSignalField(group, { geometries, materials });
     signalUniforms.uPixelRatio.value = pixelRatio;
   } else {
     // Local deterministic clay grain: fine mineral speckles and faint wheel marks.
@@ -64,8 +59,8 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
     const texture = new THREE.CanvasTexture(grain);
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping; texture.repeat.set(3, 2); textures.push(texture);
     ceramic = new THREE.MeshPhysicalMaterial({
-      color: 0xba9670, roughness: .72, metalness: 0,
-      bumpMap: texture, bumpScale: .012, clearcoat: .12, clearcoatRoughness: .35,
+      color: 0xe0d3b8, roughness: .88, metalness: 0,
+      bumpMap: texture, bumpScale: .006, clearcoat: .025, clearcoatRoughness: .35,
     }); materials.push(ceramic);
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
     key.castShadow = true; key.shadow.radius = 3; key.shadow.mapSize.set(mobile ? 512 : 1024, mobile ? 512 : 1024);
@@ -74,16 +69,21 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
     key.shadow.camera.top = 3; key.shadow.camera.bottom = -3;
     const floorMaterial = new THREE.ShadowMaterial({ opacity: .18 }); materials.push(floorMaterial);
     const floor = mesh(new THREE.PlaneGeometry(12, 12), floorMaterial, scene);
-    floor.rotation.x = -Math.PI / 2; floor.position.y = -.955; floor.receiveShadow = true;
-    const points = [[.01,0],[.42,0],[.54,.05],[.62,.22],[.65,.5],[.62,.8],[.52,1.12],[.38,1.4],[.34,1.55],[.34,1.61],[.31,1.64],[.28,1.61],[.28,1.55],[.32,1.4],[.46,1.12],[.56,.8],[.59,.5],[.56,.22],[.45,.12],[.01,.12]].map(([x,y]) => new THREE.Vector2(x,y));
-    const geometry = new THREE.LatheGeometry(points, mobile ? 48 : 72); geometries.push(geometry);
-    for (let i = 0; i < 2; i++) {
-      const vase = new THREE.Mesh(geometry, ceramic);
-      vase.scale.setScalar(i === 0 ? 1.3 : .9);
-      vase.position.set(i === 0 ? -.65 : .8, -.95, i === 0 ? .12 : -.18);
-      vase.castShadow = true; vase.receiveShadow = true; group.add(vase);
+    floor.rotation.x = -Math.PI / 2; floor.position.y = -1.435; floor.receiveShadow = true;
+    // INTERVAL: one continuous, open paper fold. No vessel or product geometry.
+    const left=[],right=[],samples=160,half=.024;
+    for(let i=0;i<=samples;i++){
+      const u=i/samples,x=.86*Math.sin(u*Math.PI*2),y=(u-.5)*2.8;
+      const dx=.86*Math.PI*2*Math.cos(u*Math.PI*2),dy=2.8,length=Math.hypot(dx,dy);
+      left.push([x-dy/length*half,y+dx/length*half]);
+      right.push([x+dy/length*half,y-dx/length*half]);
     }
-    camera.position.set(0, world && mobile ? 3.5 : 2.0, world ? (mobile ? 13.5 : 8.4) : mobile ? 7.6 : 7.1); camera.lookAt(0, world && mobile ? 1.25 : .12, 0);
+    const shape=new THREE.Shape();
+    [...left,...right.reverse()].forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();
+    const geometry=new THREE.ExtrudeGeometry(shape,{depth:1.15,steps:1,bevelEnabled:true,bevelThickness:.012,bevelSize:.012,bevelSegments:3});
+    geometry.translate(0,0,-.575);geometries.push(geometry);
+    const relief=new THREE.Mesh(geometry,ceramic);relief.castShadow=true;relief.receiveShadow=true;group.add(relief);
+    camera.position.set(0, world && mobile ? 3.5 : 2.0, world ? (mobile ? 13.5 : 8.4) : mobile ? 7.6 : 7.1); camera.lookAt(0, world && mobile ? 1.0 : .12, 0);
   }
 
   function syncClock() { clock.setRunning(!paused && (index === 0 || finishChanging || inspectionChanging)); }
@@ -120,8 +120,8 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
         if (Math.abs(inspection - inspectionTarget) < .001) { inspection = inspectionTarget; inspectionChanging = false; syncClock(); }
       }
       camera.position.z = (world ? (mobile ? 13.5 : 8.4) : mobile ? 7.6 : 7.1) - inspection * 1.5 - journey * .6;
-      camera.lookAt(-inspection * .15, (world && mobile ? 1.25 : .12) + inspection * .12, 0);
-      group.rotation.y = turn * Math.PI / 180 + pointerX * .12 + journey * .5;
+      camera.lookAt(-inspection * .15, (world && mobile ? 1.0 : .12) + inspection * .12, 0);
+      group.rotation.y = -.55 + turn * Math.PI / 180 + pointerX * .12 + journey * .5;
     }
     renderer.render(scene, camera);
   }
@@ -158,9 +158,9 @@ export function mountProjectSculpture(stage, index, { onFallback, presentation =
     setFinish(value) {
       // Preference events may arrive after a control action; read the live value.
       paused = reduced.matches;
-      targetColor.set({ sand:'#ba9670', sage:'#92a58b', clay:'#c37151', ink:'#3b566a' }[value] || '#ba9670');
-      roughnessTarget = { sand:.72, sage:.84, clay:.64, ink:.34 }[value] ?? .72;
-      coatTarget = { sand:.12, sage:.04, clay:.16, ink:.5 }[value] ?? .12;
+      targetColor.set({ sand:'#e0d3b8', sage:'#92a58b', clay:'#c37151', ink:'#3b566a' }[value] || '#e0d3b8');
+      roughnessTarget = { sand:.88, sage:.92, clay:.84, ink:.62 }[value] ?? .72;
+      coatTarget = { sand:.025, sage:.01, clay:.035, ink:.08 }[value] ?? .12;
       finishChanging = true; render(); syncClock();
     },
     dispose() {

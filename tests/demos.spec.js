@@ -23,14 +23,14 @@ for (const width of [1440, 390]) {
     await expect(demo.locator('.demo-stage')).toHaveAttribute('data-finish', 'sage');
     await expect(demo.locator('output')).toHaveText('Sage / 01');
     await expect(page.getByRole('button', { name: 'Sage finish' })).toHaveAttribute('aria-pressed', 'true');
-    await page.getByRole('slider', { name: 'Turn ceramics' }).focus();
+    await page.getByRole('slider', { name: 'Turn artwork' }).focus();
     await page.keyboard.press('End');
-    await expect(page.getByRole('slider', { name: 'Turn ceramics' })).toHaveValue('30');
-    expect(await demo.locator('.v1').evaluate(el => getComputedStyle(el).transform)).not.toBe('none');
+    await expect(page.getByRole('slider', { name: 'Turn artwork' })).toHaveValue('30');
+    expect(await demo.locator('.relief-paper').evaluate(el => getComputedStyle(el).transform)).not.toBe('none');
     await page.getByRole('dialog').getByRole('button', { name: 'Offgrid', exact: true }).click();
     await page.getByRole('button', { name: 'Night', exact: true }).click();
     await expect(demo.locator('.landscape-hour')).toHaveText('23:00 / NIGHTFALL');
-    expect(await demo.locator('.landscape-stars').evaluate(el => getComputedStyle(el).opacity)).toBe('1');
+    expect(await demo.locator('.demo-stage').evaluate(el => el.style.getPropertyValue('--drift-open'))).toBe('1.19');
     await page.getByRole('button', { name: 'Dawn', exact: true }).click();
     await expect(demo.locator('.landscape-hour')).toContainText('DAWN');
     await page.getByRole('dialog').getByRole('button', { name: 'Good Noise', exact: true }).click();

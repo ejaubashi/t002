@@ -10,7 +10,7 @@ try{
   let fresh=false;
   for(let attempt=0;attempt<6;attempt++){
    await page.goto('https://ejaubashi.github.io/t002/?v=perception-'+Date.now()+'#project/orbit');
-   if((await page.locator('.orbit-demo-title').textContent()).startsWith('ORBIT')){fresh=true;break;}
+   if((await page.locator('.demo-stage').getAttribute('data-artwork'))==='tension'){fresh=true;break;}
    await page.waitForTimeout(10000);
   }
   expect(fresh).toBe(true);
@@ -19,11 +19,13 @@ try{
   await expect(page.getByRole('button',{name:'Wave',exact:true})).toHaveAttribute('aria-pressed','true');
   await page.locator('.detail-next').click();
   await expect(page.locator('.world-form-title')).toContainText('Quiet');
+  await expect(page.locator('.demo-stage')).toHaveAttribute('data-artwork','interval');
+  await expect(page.locator('.vase')).toHaveCount(0);
   await expect(page.locator('#interactive-demo .project-sculpture')).toBeVisible();
   await page.getByRole('button',{name:'Sage finish',exact:true}).click();
   await expect(page.locator('.demo-stage')).toHaveAttribute('data-finish','sage');
-  await page.getByRole('slider',{name:'Turn ceramics'}).focus();await page.keyboard.press('End');
-  await expect(page.getByRole('slider',{name:'Turn ceramics'})).toHaveValue('30');
+  await page.getByRole('slider',{name:'Turn artwork'}).focus();await page.keyboard.press('End');
+  await expect(page.getByRole('slider',{name:'Turn artwork'})).toHaveValue('30');
   await page.locator('.detail-next').click();
   await page.getByRole('button',{name:'Night',exact:true}).click();
   await expect(page.locator('.landscape-hour')).toContainText('NIGHTFALL');
@@ -32,7 +34,7 @@ try{
   await page.locator('.record-tracks [data-track="1"]').click();
   await expect(page.locator('.record-copy')).toContainText('soft');
   await page.locator('.record-tracks [data-track="2"]').click();
-  await page.getByRole('button',{name:'Flip sleeve',exact:true}).click();
+  await page.getByRole('button',{name:'Reverse artwork',exact:true}).click();
   await expect(page.locator('.record-sleeve-back h3')).toHaveText('ELECTRIC FEEL');
   expect(await page.locator('#interactive-demo').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
   await page.getByRole('button',{name:'Close project'}).click();

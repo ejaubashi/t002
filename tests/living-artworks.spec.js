@@ -1,0 +1,32 @@
+import {test,expect} from '@playwright/test';
+
+for(const width of [1440,390])test('original artworks replace objects and keep direct control at '+width+'px',async({page})=>{
+ await page.setViewportSize({width,height:900});await page.emulateMedia({reducedMotion:'reduce'});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/#project/form-and-field');
+ await expect(page.locator('.demo-3d-ready')).toBeVisible();
+ await expect(page.locator('.vase,.world-vinyl')).toHaveCount(0);
+ await expect(page.locator('.demo-stage')).toHaveAttribute('data-artwork','interval');
+ await page.getByRole('slider',{name:'Turn artwork'}).focus();await page.keyboard.press('End');
+ await expect(page.getByRole('slider',{name:'Turn artwork'})).toHaveValue('30');
+ await page.getByRole('button',{name:'Clay finish'}).click();
+ await expect(page.locator('.demo-stage')).toHaveAttribute('data-finish','clay');
+ await page.getByRole('button',{name:'Close project'}).click();
+ await page.goto('/#project/offgrid');
+ await expect(page.locator('.art-drift .drift-lines path')).toHaveCount(40);
+ await expect(page.locator('.landscape-sun,.landscape-ridge,.landscape-moon')).toHaveCount(0);
+ await page.getByRole('button',{name:'Night',exact:true}).click();
+ await expect(page.locator('.landscape-hour')).toContainText('NIGHTFALL');
+ await page.getByRole('button',{name:'Close project'}).click();
+ await page.goto('/#project/good-noise');
+ await expect(page.locator('.record-vinyl>span,.noise-print-sleeve')).toHaveCount(0);
+ const rotation=page.getByRole('slider',{name:'Artwork rotation'});
+ await rotation.focus();await page.keyboard.press('ArrowRight');
+ await expect(rotation).toHaveAttribute('aria-valuenow','15');
+ await expect(page.locator('.record-artwork')).not.toHaveCSS('transform','none');
+ await page.locator('.record-tracks [data-track="1"]').click();
+ await expect(page.locator('.record-layer.is-selected .cover-rosette ellipse')).toHaveCount(20);
+ await expect(page.getByRole('button',{name:'Enable sound'})).toHaveAttribute('aria-pressed','false');
+ expect(await page.locator('#interactive-demo').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
+ await page.getByRole('button',{name:'Close project'}).click();expect(errors).toEqual([]);
+});

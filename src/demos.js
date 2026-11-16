@@ -3,7 +3,7 @@ import { createProjectClock } from './project-clock.js';
 import { createOrbitCanvas } from './orbit-canvas.js';
 import { bindHorizontalDrag } from './project-gestures.js';
 import { worlds } from './worlds.js';
-import { artwork } from './artwork.js';
+import { reliefSVG, driftSVG } from './living-artworks.js';
 import '@fontsource/dm-sans/latin-400-italic.css';
 import './demos.css';
 
@@ -99,8 +99,8 @@ export function mountDemo(root, index) {
   }
 
   if (index === 1) {
-    stage.innerHTML = `<div class="form-aperture" aria-hidden="true"></div><div class="demo-ceramics art-form">${artwork[1][1]}<span class="ceramic-edition">THE EVERYDAY COLLECTION / 001</span></div>`;
-    controls.innerHTML = '<div class="finish-picker" role="group" aria-label="Ceramic finish"><span>Finish</span><button data-color="sand" aria-label="Sand finish" aria-pressed="true"></button><button data-color="sage" aria-label="Sage finish" aria-pressed="false"></button><button data-color="clay" aria-label="Clay finish" aria-pressed="false"></button><button data-color="ink" aria-label="Ink finish" aria-pressed="false"></button></div><label>Turn <input aria-label="Turn ceramics" type="range" min="-30" max="30" value="0"></label><output aria-live="polite">Sand / 01</output><button class="inspect-form" aria-pressed="false">Inspect form</button>';
+    stage.innerHTML = `<div class="form-aperture" aria-hidden="true"></div><div class="relief-fallback"><div class="relief-paper">${reliefSVG('project-relief')}</div></div>`;
+    controls.innerHTML = '<div class="finish-picker" role="group" aria-label="Artwork pigment"><span>Finish</span><button data-color="sand" aria-label="Sand finish" aria-pressed="true"></button><button data-color="sage" aria-label="Sage finish" aria-pressed="false"></button><button data-color="clay" aria-label="Clay finish" aria-pressed="false"></button><button data-color="ink" aria-label="Ink finish" aria-pressed="false"></button></div><label>Turn <input aria-label="Turn artwork" type="range" min="-30" max="30" value="0"></label><output aria-live="polite">Sand / 01</output><button class="inspect-form" aria-pressed="false">Inspect form</button>';
     for (const button of controls.querySelectorAll('[data-color]')) listen(button, 'click', () => {
       stage.dataset.finish = button.dataset.color;
       sculpture?.setFinish(button.dataset.color);
@@ -127,13 +127,14 @@ export function mountDemo(root, index) {
     });
     stage.insertAdjacentHTML('beforeend', '<div class="world-form-title" aria-hidden="true">Quiet<br><em>by nature.</em></div>');
     stage.dataset.finish = 'sand';
+    stage.setAttribute('role','group');stage.setAttribute('aria-label','Interval, a folded paper relief. Change the pigment or turn the artwork with the controls.');
     const onPreference = () => { paused = reduced.matches; syncMotion(); };
     reduced.addEventListener('change', onPreference);
     cleanups.push(() => reduced.removeEventListener('change', onPreference));
   }
 
   if (index === 2) {
-    stage.innerHTML = '<div class="demo-landscape"><span class="landscape-note">LESS SIGNAL. MORE FEELING.</span><div class="landscape-stars"></div><div class="landscape-clouds" aria-hidden="true"><i></i><i></i><i></i></div><div class="landscape-moon" aria-hidden="true"></div><div class="landscape-sun"></div><div class="landscape-ridge ridge-far"></div><div class="landscape-ridge ridge-near"></div><div class="landscape-ridge ridge-front"></div><div class="landscape-word">somewhere,<br><em>slower.</em></div><span class="landscape-coordinate">46°35′ N / 12°18′ E</span><span class="landscape-hour">12:00 / DAYLIGHT</span></div>';
+    stage.innerHTML = '<div class="demo-landscape art-drift"><span class="landscape-note">LESS SIGNAL.<br>MORE FEELING.</span>'+driftSVG()+'<div class="landscape-word">somewhere,<br><em>slower.</em></div><span class="landscape-coordinate">003 / DRIFT</span><span class="landscape-hour">12:00 / DAYLIGHT</span></div>';
     controls.innerHTML = '<label class="time-picker">Time of day <input aria-label="Landscape time of day" type="range" min="0" max="100" value="35"></label><div class="time-presets" role="group" aria-label="Time presets"><button data-time="10">Dawn</button><button data-time="35">Day</button><button data-time="65">Dusk</button><button data-time="100">Night</button></div><button class="motion-toggle"></button>';
     const range = controls.querySelector('input');
     const atmospheres = [
@@ -159,6 +160,7 @@ export function mountDemo(root, index) {
       stage.style.setProperty('--moon', String(Math.max(0, (v-65)/35)));
       stage.style.setProperty('--star-visibility', String(Math.max(0, (v-55)/45)));
       stage.style.setProperty('--night', String(v / 100));
+      stage.style.setProperty('--drift-open', String(.74+v*.0045));
       stage.style.setProperty('--sun-y', `${v * 1.5}px`);
       stage.style.setProperty('--sun-x', `${v * .8}px`);
       const period = v < 20 ? 'DAWN' : v < 55 ? 'DAYLIGHT' : v < 82 ? 'GOLDEN HOUR' : 'NIGHTFALL';
@@ -180,7 +182,7 @@ export function mountDemo(root, index) {
       onStart: () => { startTime = Number(range.value); },
       onMove: ({ dx }) => update(startTime + dx / stage.clientWidth * 100),
     }, signal);
-    stage.tabIndex = 0; stage.setAttribute('role', 'group'); stage.setAttribute('aria-label', 'Offgrid landscape. Drag horizontally or use arrow keys to change the time of day.');
+    stage.tabIndex = 0; stage.setAttribute('role', 'group'); stage.setAttribute('aria-label', 'Drift, a suspended line drawing. Drag horizontally or use arrow keys to change the light.');
     stage.insertAdjacentHTML('beforeend', '<span class="stage-gesture-hint" aria-hidden="true">DRAG THE HORIZON / FIND YOUR HOUR</span>');
     listen(stage, 'keydown', event => {
       if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
@@ -193,32 +195,32 @@ export function mountDemo(root, index) {
   }
 
   if (index === 3) {
-    stage.innerHTML = '<div class="demo-record"><div class="record-artwork">'+records.map((_, i) => `<div class="record-layer${i === 0 ? ' is-selected' : ''}" data-cover="${i}">${recordArtwork(i)}</div>`).join('')+'</div><span class="record-kicker">GOOD NOISE / INDEPENDENT CULTURE</span><div class="record-copy">GOOD<br><em>NOISE</em></div><div class="noise-print-sleeve" aria-hidden="true"></div><div class="record-turntable"><div class="record-vinyl"><span>GN<span>01</span></span></div><div class="record-needle"></div></div><div class="record-bars" aria-hidden="true">'+Array.from({ length: 28 }, (_, i) => `<i style="--i:${i}"></i>`).join('')+'</div><span class="record-caption" role="status">01 — AFTER HOURS</span></div>';
-    controls.innerHTML = '<button class="motion-toggle"></button><div class="record-tracks" role="group" aria-label="Visual record selection"><button data-track="0" aria-pressed="true">01</button><button data-track="1" aria-pressed="false">02</button><button data-track="2" aria-pressed="false">03</button></div><button class="flip-sleeve" aria-pressed="false">Flip sleeve</button><button class="sound-toggle" aria-pressed="false">Enable sound</button><span class="visual-only" role="status">SOUND OFF</span>';
+    stage.innerHTML = '<div class="demo-record"><div class="record-artwork">'+records.map((_, i) => `<div class="record-layer${i === 0 ? ' is-selected' : ''}" data-cover="${i}">${recordArtwork(i)}</div>`).join('')+'</div><span class="record-kicker">GOOD NOISE / INDEPENDENT CULTURE</span><div class="record-copy">GOOD<br><em>NOISE</em></div><div class="record-turntable"><div class="record-vinyl"></div></div><div class="record-bars" aria-hidden="true">'+Array.from({ length: 28 }, (_, i) => `<i style="--i:${i}"></i>`).join('')+'</div><span class="record-caption" role="status">01 — AFTER HOURS</span></div>';
+    controls.innerHTML = '<button class="motion-toggle"></button><div class="record-tracks" role="group" aria-label="Visual record selection"><button data-track="0" aria-pressed="true">01</button><button data-track="1" aria-pressed="false">02</button><button data-track="2" aria-pressed="false">03</button></div><button class="flip-sleeve" aria-pressed="false">Reverse artwork</button><button class="sound-toggle" aria-pressed="false">Enable sound</button><span class="visual-only" role="status">SOUND OFF</span>';
     const front = stage.querySelector('.demo-record');
     const sleeve = document.createElement('div'); sleeve.className = 'record-sleeve';
     stage.append(sleeve); sleeve.append(front);
     const back = document.createElement('div'); back.className = 'record-sleeve-back';
-    back.innerHTML = '<span class="sleeve-edition">GOOD NOISE / SIDE B</span><h3>AFTER HOURS</h3><p class="sleeve-notes"></p><span class="sleeve-colophon">INDEPENDENT CULTURE.<br>TURN IT OVER. LOOK A LITTLE CLOSER.</span><div class="sleeve-mark" aria-hidden="true">GN</div>';
+    back.innerHTML = '<span class="sleeve-edition">GOOD NOISE / SIDE B</span><h3>AFTER HOURS</h3><p class="sleeve-notes"></p><span class="sleeve-colophon">INDEPENDENT CULTURE.<br>A SCORE FOR THE EYE. LOOK A LITTLE CLOSER.</span><div class="sleeve-mark" aria-hidden="true">GN</div>';
     sleeve.append(back); back.inert = true; back.setAttribute('aria-hidden', 'true');
     const notes = [
-      'A late-night current. Flowing ribbons trace the rhythm, with bold condensed type and a warm rose sleeve.',
-      'Room to breathe. A slow rosette opens and turns behind soft italic lettering and a quiet sage palette.',
-      'An angular pulse. Stepped vectors cut across the sleeve, with tilted type and a bright lime center.',
+      'A late-night current. One continuous stroke folds through itself, tracing a warm, asymmetrical visual score.',
+      'Room to breathe. A slow rosette opens like a drawing of air, with soft italic lettering and a quiet sage palette.',
+      'An angular pulse. A family of stepped ink strokes shifts between tension and balance, with tilted type on violet paper.',
     ];
     back.querySelector('.sleeve-notes').textContent = notes[0];
-    stage.insertAdjacentHTML('beforeend', '<span class="stage-gesture-hint" aria-hidden="true">DRAG THE VINYL / FLIP THE SLEEVE</span>');
+    stage.insertAdjacentHTML('beforeend', '<span class="stage-gesture-hint" aria-hidden="true">DRAG TO TURN / REVERSE THE ARTWORK</span>');
     listen(controls.querySelector('.flip-sleeve'), 'click', event => {
       const flipped = event.currentTarget.getAttribute('aria-pressed') !== 'true';
       event.currentTarget.setAttribute('aria-pressed', String(flipped));
-      event.currentTarget.textContent = flipped ? 'Back to artwork' : 'Flip sleeve';
+      event.currentTarget.textContent = flipped ? 'Back to artwork' : 'Reverse artwork';
       stage.classList.toggle('sleeve-flipped', flipped);
       front.inert = flipped; front.setAttribute('aria-hidden', String(flipped));
       back.inert = !flipped; back.setAttribute('aria-hidden', String(!flipped));
       syncMotion();
     });
     const vinyl = stage.querySelector('.record-vinyl');
-    vinyl.tabIndex = 0; vinyl.setAttribute('role', 'slider'); vinyl.setAttribute('aria-label', 'Record rotation');
+    vinyl.tabIndex = 0; vinyl.setAttribute('role', 'slider'); vinyl.setAttribute('aria-label', 'Artwork rotation');
     vinyl.setAttribute('aria-valuemin', '0'); vinyl.setAttribute('aria-valuemax', '359');
     let recordAngle = 0, startAngle = 0, scratchVelocity = 0;
     function setRecordAngle(value) {
@@ -247,7 +249,7 @@ export function mountDemo(root, index) {
       stage.querySelector('.record-copy').innerHTML = records[n].copy;
       back.querySelector('h3').textContent = records[n].name; back.querySelector('.sleeve-notes').textContent = notes[n];
       stage.querySelector('.record-caption').textContent = `0${n + 1} — ${records[n].name}`;
-      stage.querySelector('.record-vinyl>span>span').textContent = `0${n + 1}`;
+
       controls.querySelectorAll('[data-track]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
       clock.invalidate();
     }));
@@ -275,6 +277,8 @@ export function mountDemo(root, index) {
       stage.style.setProperty('--cover-scale', String(1 + Math.sin(t * .65) * .035));
     });
   }
+  stage.dataset.artwork=['tension','interval','drift','resonance'][index];
+  stage.insertAdjacentHTML('beforeend','<span class="living-work-caption" aria-hidden="true">'+['001 / TENSION','002 / INTERVAL','003 / DRIFT','004 / RESONANCE'][index]+'</span>');
   if (index < 2 && !navigator.connection?.saveData) {
     import('./sculpture.js').then(module => {
       if (disposed) return;

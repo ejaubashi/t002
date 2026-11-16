@@ -34,7 +34,7 @@ for (const width of [1440,390]) {
     await expect(page.locator('.demo-3d-ready')).toBeVisible();
     await page.locator('.demo-stage').scrollIntoViewIfNeeded();
     await drag(page,page.locator('.demo-stage'),90,false);
-    await expect(page.getByRole('slider',{ name:'Turn ceramics' })).not.toHaveValue('0');
+    await expect(page.getByRole('slider',{ name:'Turn artwork' })).not.toHaveValue('0');
     const collection = await page.locator('.project-sculpture').screenshot();
     await page.getByRole('button',{ name:'Inspect form', exact:true }).click();
     await expect(page.getByRole('button',{ name:'View collection', exact:true })).toHaveAttribute('aria-pressed','true');
@@ -46,7 +46,7 @@ for (const width of [1440,390]) {
     await page.locator('.demo-stage').focus(); await page.keyboard.press('End');
     await expect(page.getByRole('slider',{ name:'Landscape time of day' })).toHaveValue('100');
     await expect(page.locator('.landscape-hour')).toContainText('NIGHTFALL');
-    await expect(page.locator('.landscape-moon')).toHaveCSS('opacity','1');
+    await expect(page.locator('.demo-stage')).toHaveCSS('--drift-open','1.19');
     await page.getByRole('button',{ name:'Day', exact:true }).click();
     await page.locator('.demo-stage').scrollIntoViewIfNeeded();
     await drag(page,page.locator('.demo-stage'),70,false);
@@ -55,10 +55,10 @@ for (const width of [1440,390]) {
     await page.getByRole('button',{ name:'Close project' }).click();
 
     await page.goto('/#project/good-noise');
-    const rotation = page.getByRole('slider',{ name:'Record rotation' });
+    const rotation = page.getByRole('slider',{ name:'Artwork rotation' });
     await rotation.focus(); await page.keyboard.press('ArrowRight');
     await expect(rotation).toHaveAttribute('aria-valuenow','15');
-    await page.getByRole('button',{ name:'Flip sleeve', exact:true }).click();
+    await page.getByRole('button',{ name:'Reverse artwork', exact:true }).click();
     await expect(page.getByRole('button',{ name:'Back to artwork', exact:true })).toHaveAttribute('aria-pressed','true');
     await expect(page.locator('.demo-record')).toHaveAttribute('inert','');
     await expect(page.locator('.record-sleeve-back')).toHaveAttribute('aria-hidden','false');
@@ -79,7 +79,7 @@ test('real touch gestures rotate ceramics, scrub the horizon and spin vinyl with
   await page.goto('http://localhost:5173/#project/form-and-field');
   await page.locator('.demo-stage').scrollIntoViewIfNeeded();
   await drag(page,page.locator('.demo-stage'),90,true);
-  await expect(page.getByRole('slider',{ name:'Turn ceramics' })).not.toHaveValue('0');
+  await expect(page.getByRole('slider',{ name:'Turn artwork' })).not.toHaveValue('0');
   await page.getByRole('button',{ name:'Close project' }).click();
   await page.goto('http://localhost:5173/#project/offgrid');
   await page.locator('.demo-stage').scrollIntoViewIfNeeded();
@@ -99,7 +99,7 @@ test('real touch gestures rotate ceramics, scrub the horizon and spin vinyl with
   await page.goto('http://localhost:5173/#project/good-noise');
   await page.locator('.record-vinyl').scrollIntoViewIfNeeded();
   await drag(page,page.locator('.record-vinyl'),55,true);
-  expect(Number(await page.getByRole('slider',{ name:'Record rotation' }).getAttribute('aria-valuenow'))).toBeGreaterThan(0);
+  expect(Number(await page.getByRole('slider',{ name:'Artwork rotation' }).getAttribute('aria-valuenow'))).toBeGreaterThan(0);
   expect(await page.locator('#interactive-demo').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
   await context.close();
 });
